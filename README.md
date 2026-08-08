@@ -1,4 +1,4 @@
-# Sonargaon University — ME Department
+# Sonargaon University — CSE Department
 
 A modern  site for the Mechanical Engineering department at Sonargaon University. Built with **Next.js 15 (App Router)**, **React 19**, **TypeScript**, **Tailwind CSS v4**, and **Motion** for animations.
 
