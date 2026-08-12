@@ -32,10 +32,12 @@ const OG_IMAGE = '/assets/og-banner.webp';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: {
-    default: SITE_NAME,
-    template: '%s — Sonargaon University CSE',
-  },
+  // Plain string, not { default, template } — every page under (public)/
+  // already sets its own full title (e.g. "Research — Department of
+  // Computer Science & Engineering"), so a parent template would
+  // double-suffix it. This plain string is what the homepage (which sets
+  // no metadata of its own) falls back to.
+  title: SITE_NAME,
   description: SITE_DESCRIPTION,
   alternates: {
     canonical: '/',

@@ -4,8 +4,9 @@ import { getDepartmentLayout, getDepartmentIdentity, getUniversityIdentity } fro
 import DepartmentLayoutClient from './DepartmentLayoutClient';
 
 export const metadata = {
-  title: 'Department Layout',
-  description: 'Department layout and building plan.',
+  title: 'Department Layout — Department of Computer Science & Engineering',
+  description:
+    'Office and room directory for the Department of Computer Science & Engineering, Sonargaon University, with a downloadable layout plan.',
 };
 
 type Room = { label: string; value: string };
