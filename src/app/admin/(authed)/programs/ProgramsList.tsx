@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Pencil, Trash2 } from 'lucide-react';
+import { BookOpen, Pencil, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import type { Program } from '@prisma/client';
 import SortableList from '@/components/admin/SortableList';
@@ -69,6 +69,14 @@ export default function ProgramsList({ items: initialItems }: { items: Program[]
             </div>
           </div>
           <div className="flex items-center gap-1 shrink-0">
+            <Link
+              href={`/admin/programs/${p.id}/course-structure`}
+              aria-label={`Edit course structure for ${p.programName}`}
+              title="Career Prospects / Course Structure / Credit Distribution"
+              className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-accent/40"
+            >
+              <BookOpen size={16} />
+            </Link>
             <Link
               href={`/admin/programs/${p.id}`}
               aria-label={`Edit ${p.programName}`}

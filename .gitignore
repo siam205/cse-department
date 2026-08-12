@@ -34,3 +34,7 @@ next-env.d.ts
 
 # Phase 19 — private security audit working notes (must never be committed)
 /.security-audit-notes/
+
+# Source content documents (spreadsheets/docs/PDFs used to populate the
+# CMS) — working files, not application code. Kept local-only.
+/cse-dept-resources/

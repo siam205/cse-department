@@ -5,7 +5,7 @@ import Container from '@/components/ui/Container';
 export const metadata = {
   title: 'Page Not Found',
   description:
-    "The page you're looking for doesn't exist on the Department of Mechanical Engineering website.",
+    "The page you're looking for doesn't exist on the Department of Computer Science & Engineering website.",
 };
 
 const quickLinks = [

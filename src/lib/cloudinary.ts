@@ -71,6 +71,10 @@ const KIND_TO_SUBFOLDER: Record<string, string> = {
   // Phase 17 — Privacy Policy + Terms & Conditions hero images (shared
   // Cloudinary folder; the same kind is used by both admin form fields).
   'legal-hero':            'legal/hero',
+  // Program course-structure PDF (Syllabus pattern — static admin
+  // upload, downloaded via getPrivateDownloadUrl).
+  'program-course-pdf':    'programs/course-structure-pdf',
+  'service-charter-pdf':   'about/service-charter',
 };
 
 function folderFor(kind: string): string {

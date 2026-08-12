@@ -10,7 +10,7 @@ import { getAdmissionRequirements, getPageHero } from '@/lib/identity';
 import { sanitizeHtml } from '@/lib/sanitize-html';
 
 export const metadata = {
-  title: 'Admission Requirements — Department of Mechanical Engineering',
+  title: 'Admission Requirements — Department of Computer Science & Engineering',
   description:
     'Admission requirements at Sonargaon University — Undergraduate and Diploma (Engineering) entry criteria.',
 };

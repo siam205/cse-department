@@ -44,6 +44,11 @@ function readResearchPaperRow(formData: FormData) {
     link:            emptyToNull(formData.get('link')),
     date:            emptyToNull(formData.get('date')),
     publicationYear: getIntOrNull(formData, 'publicationYear'),
+    publisher:       emptyToNull(formData.get('publisher')),
+    indexStatus:     emptyToNull(formData.get('indexStatus')),
+    quartile:        emptyToNull(formData.get('quartile')),
+    citeScore:       emptyToNull(formData.get('citeScore')),
+    authorPosition:  emptyToNull(formData.get('authorPosition')),
   };
 }
 

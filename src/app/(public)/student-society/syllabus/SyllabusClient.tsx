@@ -82,7 +82,7 @@ export default function SyllabusClient({ items }: { items: readonly SyllabusCard
                 Postgraduate syllabus coming soon
               </p>
               <p className="text-gray-500 text-sm">
-                Postgraduate programs in Mechanical Engineering are not offered yet. Please check back later for updates.
+                Postgraduate programs in Computer Science & Engineering are not offered yet. Please check back later for updates.
               </p>
             </>
           ) : (
@@ -129,7 +129,8 @@ export default function SyllabusClient({ items }: { items: readonly SyllabusCard
                 {s.pdfUrl ? (
                   <a
                     href={s.pdfUrl}
-                    download
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="mt-auto inline-flex items-center justify-center gap-2 w-full px-5 py-3 bg-primary hover:bg-primary/90 text-white text-sm font-semibold rounded-md transition-colors"
                   >
                     <Download size={16} />

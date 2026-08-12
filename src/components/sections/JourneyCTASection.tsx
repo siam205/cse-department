@@ -1,7 +1,12 @@
 'use client';
 
 import { motion } from 'motion/react';
+import { usePathname } from 'next/navigation';
 import Container from '../ui/Container';
+
+// Routes that opt out of this global chrome section (rendered in
+// (public)/layout.tsx on every page by default).
+const EXCLUDED_PATHS = ['/admission/prospectus'];
 
 // Phase 12 — DB-driven. The root layout fetches JourneyCTAContent
 // once per request (React.cache'd) and passes the fields down as
@@ -32,6 +37,9 @@ export default function JourneyCTASection({
   secondaryCtaHref,
   secondaryCtaExternal,
 }: Props) {
+  const pathname = usePathname();
+  if (EXCLUDED_PATHS.includes(pathname)) return null;
+
   return (
     <section className="relative">
       {/* Hero image with overlays. Plain <img> instead of next/image —

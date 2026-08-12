@@ -7,6 +7,7 @@ import ImageUploader from '@/components/admin/ImageUploader';
 import HeroImagePositionSlider from '@/components/admin/HeroImagePositionSlider';
 import StatsEditor from '@/components/admin/StatsEditor';
 import ActivitiesEditor from '@/components/admin/ActivitiesEditor';
+import KeyValueListEditor from '@/components/admin/KeyValueListEditor';
 import {
   updateAboutMechaClubAction,
   type ActionResult,
@@ -82,6 +83,45 @@ export default function AboutMechaClubForm({ initial }: { initial: AboutMechaClu
                    placeholder="Core Activities & Initiatives" />
         <ActivitiesEditor name="activities"
                           initialValue={initial?.activities} />
+      </Card>
+
+      <Card title="Leadership">
+        <p className="text-xs text-gray-500 -mt-2">
+          Faculty advisors and student President/Vice-President. Name on the left, designation on the right.
+        </p>
+        <KeyValueListEditor
+          name="leadership"
+          initialValue={initial?.leadership ?? []}
+          labelPlaceholder="Name (e.g. Prof. Bulbul Ahamed)"
+          valuePlaceholder="Designation (e.g. Chief Advisor)"
+          addButtonLabel="Add leader"
+          emptyHint="No leadership rows yet."
+        />
+      </Card>
+
+      <Card title="Executive Committee">
+        <p className="text-xs text-gray-500 -mt-2">
+          The student officer roster. Name on the left, role on the right.
+        </p>
+        <KeyValueListEditor
+          name="executives"
+          initialValue={initial?.executives ?? []}
+          labelPlaceholder="Name (e.g. Faria Islam)"
+          valuePlaceholder="Role (e.g. Executive)"
+          addButtonLabel="Add member"
+          emptyHint="No executive committee members yet."
+        />
+      </Card>
+
+      <Card title="Contact">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <TextField label="Contact email (optional)" name="contactEmail"
+                     defaultValue={initial?.contactEmail ?? ''}
+                     placeholder="supc.programmingclub@gmail.com" />
+          <TextField label="Contact phone (optional)" name="contactPhone"
+                     defaultValue={initial?.contactPhone ?? ''}
+                     placeholder="02-48112247" />
+        </div>
       </Card>
 
       <Card title="Network section">

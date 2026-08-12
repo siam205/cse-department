@@ -5,7 +5,7 @@ import { getActiveAdmissionNotice, getPageHero } from '@/lib/identity';
 import { sanitizeHtml } from '@/lib/sanitize-html';
 
 export const metadata = {
-  title: 'Admission Notice — Department of Mechanical Engineering',
+  title: 'Admission Notice — Department of Computer Science & Engineering',
   description:
     'Official admission notice from Sonargaon University, Office of the Registrar.',
 };

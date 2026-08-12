@@ -9,6 +9,7 @@ import {
   applyDeliveryTransformation,
   type ImageQualityPreset,
 } from '@/lib/image-quality';
+import { compressImageToLimit } from '@/lib/image-compress';
 
 type Kind =
   | 'department-logo'
@@ -44,7 +45,9 @@ type Kind =
   // Phase 12
   | 'journey-cta-hero'
   // Phase 17
-  | 'legal-hero';
+  | 'legal-hero'
+  | 'program-course-pdf'
+  | 'service-charter-pdf';
 
 // Per-kind ideal upload size hint, surfaced under every image field
 // so admins have a target before opening the file picker. null = no
@@ -79,6 +82,8 @@ const RECOMMENDED_SIZE_BY_KIND: Record<Kind, string | null> = {
   'contact-hero':          'Landscape banner · 1920×500',
   'journey-cta-hero':      'Landscape · 1920×800',
   'legal-hero':            'Landscape banner · 1920×500',
+  'program-course-pdf':    null,
+  'service-charter-pdf':   null,
 };
 
 export type UploadMeta = {
@@ -171,8 +176,39 @@ export default function ImageUploader({
   const showQuality = accept !== 'application/pdf';
 
   async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
+    let file = e.target.files?.[0];
     if (!file) return;
+    // This Cloudinary account's free-plan limit for image-type
+    // resources (which PDFs upload as too, via /auto/upload) is
+    // 10 MB. Raster images over that get auto-compressed client-side
+    // (re-encoded as WebP at reduced quality/dimensions) so admins
+    // never have to manually resize anything before uploading. PDFs
+    // can't be compressed here, so they still hit the hard block.
+    const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
+    if (file.size > MAX_UPLOAD_BYTES) {
+      if (file.type.startsWith('image/')) {
+        const gotMb = (file.size / (1024 * 1024)).toFixed(1);
+        toast.info(`Compressing image (${gotMb} MB) to fit the 10 MB upload limit…`);
+        try {
+          file = await compressImageToLimit(file, MAX_UPLOAD_BYTES);
+        } catch {
+          toast.error('Could not read this image file. Try a different one.');
+          if (fileRef.current) fileRef.current.value = '';
+          return;
+        }
+        if (file.size > MAX_UPLOAD_BYTES) {
+          const stillMb = (file.size / (1024 * 1024)).toFixed(1);
+          toast.error(`Even after compression this image is ${stillMb} MB — still over the 10 MB limit. Try a smaller source image.`);
+          if (fileRef.current) fileRef.current.value = '';
+          return;
+        }
+      } else {
+        const gotMb = (file.size / (1024 * 1024)).toFixed(1);
+        toast.error(`File is too large (${gotMb} MB). Maximum allowed is 10 MB — compress the file and try again.`);
+        if (fileRef.current) fileRef.current.value = '';
+        return;
+      }
+    }
     setUploading(true);
     try {
       // 1. Get signed Cloudinary params from our server
@@ -195,10 +231,13 @@ export default function ImageUploader({
       fd.append('folder', sign.folder);
       fd.append('signature', sign.signature);
       const upRes = await fetch(sign.uploadUrl, { method: 'POST', body: fd });
+      const upJson = await upRes.json().catch(() => ({}));
       if (!upRes.ok) {
-        throw new Error('Cloudinary upload failed');
+        // Cloudinary's error body is `{ error: { message } }` — surface
+        // it directly instead of a generic message so admins know
+        // exactly what to fix (file size, format, etc.).
+        throw new Error(upJson?.error?.message ?? 'Cloudinary upload failed');
       }
-      const upJson = await upRes.json();
 
       // Detect type from Cloudinary's `format` field (more reliable than
       // resource_type, which varies by account/plan for PDFs).
@@ -347,6 +386,10 @@ export default function ImageUploader({
           {sizeHint}
         </p>
       )}
+      <p className="text-[11px] text-gray-400 leading-snug">
+        Max file size: 10 MB
+        {accept !== 'application/pdf' && ' — larger images are auto-compressed to fit'}
+      </p>
       {showQuality && (
         <fieldset
           className="border border-gray-200 rounded-md p-2.5 mt-1"

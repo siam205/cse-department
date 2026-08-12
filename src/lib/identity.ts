@@ -92,7 +92,9 @@ export const getProgramsWithCta = cache(async () => {
 });
 
 export const getProgramByDegreeCode = cache(async (degreeCode: string) => {
-  const programs = await prisma.program.findMany({ include: { feeStructure: true } });
+  const programs = await prisma.program.findMany({
+    include: { feeStructure: true, courseStructure: true },
+  });
   return programs.find((program) => program.degreeCode.toLowerCase() === degreeCode.toLowerCase()) ?? null;
 });
 
@@ -295,7 +297,7 @@ export const getNewsLanding = cache(async () => {
 // at render time via coerceParagraphs / coerceKeyValueList.
 export const getNews = cache(async (opts?: { skip?: number; take?: number }) => {
   return prisma.news.findMany({
-    orderBy: { publishedAt: 'desc' },
+    orderBy: { displayOrder: 'asc' },
     skip: opts?.skip,
     take: opts?.take,
   });
@@ -317,7 +319,7 @@ export const getNewsSlugs = cache(async () => {
 // Homepage NewsSection — top 5 (main + 4 sides).
 export const getNewsHomeTop = cache(async () => {
   return prisma.news.findMany({
-    orderBy: { publishedAt: 'desc' },
+    orderBy: { displayOrder: 'asc' },
     take: 5,
   });
 });
@@ -397,6 +399,14 @@ export const getSyllabi = cache(async () => {
 
 export const getTransportLanding = cache(async () => {
   return prisma.transportLanding.findUnique({ where: { id: 'singleton' } });
+});
+
+export const getServiceCharterLanding = cache(async () => {
+  return prisma.serviceCharterLanding.findUnique({ where: { id: 'singleton' } });
+});
+
+export const getServiceCharterItems = cache(async () => {
+  return prisma.serviceCharterItem.findMany({ orderBy: { displayOrder: 'asc' } });
 });
 
 // ─────────────────────────────────────────────────────────────────

@@ -47,6 +47,29 @@ export default function ResearchPaperForm({ initial }: { initial: ResearchPaper 
         </p>
       </Card>
 
+      <Card title="Bibliometrics (optional)">
+        <TextField label="Publisher / venue" name="publisher"
+                   defaultValue={initial?.publisher ?? ''}
+                   placeholder="Springer, Singapore" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <TextField label="Index status" name="indexStatus"
+                     defaultValue={initial?.indexStatus ?? ''}
+                     placeholder="Scopus / WoS (SSCI)" />
+          <TextField label="Quartile" name="quartile"
+                     defaultValue={initial?.quartile ?? ''}
+                     placeholder="Q1–Q4" />
+          <TextField label="CiteScore / IF" name="citeScore"
+                     defaultValue={initial?.citeScore ?? ''}
+                     placeholder="CiteScore: 3.9" />
+        </div>
+        <TextField label="Author position" name="authorPosition"
+                   defaultValue={initial?.authorPosition ?? ''}
+                   placeholder="Corresponding / 1st / 2nd …" />
+        <p className="text-xs text-gray-500">
+          These fields render as small badges on the public research page when present. Leave blank for entries where the source doesn&apos;t report them (e.g. conference papers with no quartile).
+        </p>
+      </Card>
+
       {state.ok === false && (
         <div role="alert" className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
           {state.error}

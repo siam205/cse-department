@@ -1,13 +1,12 @@
 import PageShell from '@/components/layout/PageShell';
 import Container from '@/components/ui/Container';
 import { getSyllabi, getPageHero } from '@/lib/identity';
-import { getPrivateDownloadUrl } from '@/lib/cloudinary';
 import SyllabusClient from './SyllabusClient';
 
 export const metadata = {
-  title: 'Syllabus — Department of Mechanical Engineering',
+  title: 'Syllabus — Department of Computer Science & Engineering',
   description:
-    'Course-by-course syllabus for the Department of Mechanical Engineering, Sonargaon University.',
+    'Course-by-course syllabus for the Department of Computer Science & Engineering, Sonargaon University.',
 };
 
 export default async function SyllabusPage() {
@@ -28,7 +27,7 @@ export default async function SyllabusPage() {
       <Container>
         <div className="max-w-3xl mx-auto text-center mb-10 md:mb-12">
           <p className="text-base md:text-lg text-gray-700 leading-[1.85]">
-            Course-by-course syllabus for the Department of Mechanical Engineering. Download the official PDF for detailed credit distribution, course outcomes, and reference materials.
+            Course-by-course syllabus for the Department of Computer Science & Engineering. Download the official PDF for detailed credit distribution, course outcomes, and reference materials.
           </p>
         </div>
 
@@ -40,7 +39,14 @@ export default async function SyllabusPage() {
             department: s.department,
             level:      s.level,
             coverUrl:   s.coverUrl,
-            pdfUrl:     s.pdfUrl && s.pdfPublicId ? getPrivateDownloadUrl(s.pdfPublicId) : null,
+            // Routed through the dynamic /api/cloudinary/download redirect
+            // instead of baking a signed private_download_url (time-limited
+            // timestamp) into this ISR-cached page — the signature would go
+            // stale and Cloudinary would reject it with "Stale request" once
+            // the cached page is served more than ~1h after it was generated.
+            pdfUrl:     s.pdfUrl && s.pdfPublicId
+              ? `/api/cloudinary/download?publicId=${encodeURIComponent(s.pdfPublicId)}&format=pdf`
+              : null,
             summary:    s.summary,
           }))}
         />

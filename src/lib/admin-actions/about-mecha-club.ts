@@ -62,6 +62,10 @@ export async function updateAboutMechaClubAction(
     networkPrimaryCtaHref:    getStr(formData, 'networkPrimaryCtaHref'),
     networkSecondaryCtaLabel: emptyToNull(formData.get('networkSecondaryCtaLabel')),
     networkSecondaryCtaHref:  emptyToNull(formData.get('networkSecondaryCtaHref')),
+    leadership:               parseJsonArray(formData, 'leadership'),
+    executives:               parseJsonArray(formData, 'executives'),
+    contactEmail:             emptyToNull(formData.get('contactEmail')),
+    contactPhone:             emptyToNull(formData.get('contactPhone')),
   };
 
   const parsed = aboutMechaClubUpdateSchema.safeParse(raw);
@@ -85,6 +89,8 @@ export async function updateAboutMechaClubAction(
     introHeading: sanitizeHtml(parsed.data.introHeading),
     stats:        parsed.data.stats as Prisma.InputJsonValue,
     activities:   parsed.data.activities as Prisma.InputJsonValue,
+    leadership:   parsed.data.leadership as Prisma.InputJsonValue,
+    executives:   parsed.data.executives as Prisma.InputJsonValue,
   };
 
   try {

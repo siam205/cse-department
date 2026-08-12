@@ -10,9 +10,9 @@ import { getFacultyList, getPageHero } from '@/lib/identity';
 export const dynamic = 'force-dynamic';
 
 export const metadata = {
-  title: 'Faculty Members — Department of Mechanical Engineering',
+  title: 'Faculty Members — Department of Computer Science & Engineering',
   description:
-    'Faculty members of the Department of Mechanical Engineering, Sonargaon University — Dean, Head of Department, full-time and part-time faculty.',
+    'Faculty members of the Department of Computer Science & Engineering, Sonargaon University — Dean, Head of Department, full-time and part-time faculty.',
 };
 
 const initialsOf = (name: string) =>

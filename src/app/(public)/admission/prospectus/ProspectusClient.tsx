@@ -1,8 +1,7 @@
 'use client';
 
-import Image from 'next/image';
 import { useMemo, useState } from 'react';
-import { Search, Download } from 'lucide-react';
+import { Search, Download, ExternalLink, BookOpen } from 'lucide-react';
 
 type Level = 'Undergraduate' | 'Postgraduate';
 
@@ -13,7 +12,8 @@ export interface ProspectusItem {
   department: string;
   level: string; // 'Undergraduate' | 'Postgraduate' (Zod-validated upstream)
   cover: string;
-  pdf: string;
+  pdfView: string;
+  pdfDownload: string;
 }
 
 const filters: ('All' | Level)[] = ['All', 'Undergraduate', 'Postgraduate'];
@@ -79,7 +79,7 @@ export default function ProspectusClient({ items }: { items: ProspectusItem[] })
         {filtered.length === 1 ? 'program' : 'programs'}
       </p>
 
-      {/* Program cards */}
+      {/* Program prospectus viewers */}
       {filtered.length === 0 ? (
         <div className="bg-white rounded-2xl border border-dashed border-gray-300 p-12 text-center">
           {active === 'Postgraduate' && !query ? (
@@ -88,7 +88,7 @@ export default function ProspectusClient({ items }: { items: ProspectusItem[] })
                 Postgraduate prospectus coming soon
               </p>
               <p className="text-gray-500 text-sm">
-                Postgraduate programs in Mechanical Engineering are not offered yet. Please check back later for updates.
+                Postgraduate programs in Computer Science & Engineering are not offered yet. Please check back later for updates.
               </p>
             </>
           ) : (
@@ -96,65 +96,81 @@ export default function ProspectusClient({ items }: { items: ProspectusItem[] })
           )}
         </div>
       ) : (
-        <div
-          className={
-            filtered.length === 1
-              ? 'flex justify-center'
-              : 'grid sm:grid-cols-2 lg:grid-cols-3 gap-6'
-          }
-        >
+        <div className="space-y-12">
           {filtered.map((p) => (
-            <article
-              key={p.slug}
-              className={`bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow overflow-hidden flex flex-col ${
-                filtered.length === 1 ? 'w-full max-w-md' : ''
-              }`}
-            >
-              {/* Cover */}
-              <div className="bg-gray-50">
-                <Image
-                  src={p.cover}
-                  alt={p.title}
-                  width={600}
-                  height={800}
-                  sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                  className="block w-full h-auto"
-                />
+            <div key={p.slug}>
+              <div className="flex flex-wrap items-end justify-between gap-3 mb-4">
+                <div>
+                  <span
+                    className={`inline-block w-fit px-3 py-1 rounded-full text-[11px] font-bold tracking-wider uppercase mb-2 ${
+                      p.level === 'Undergraduate'
+                        ? 'bg-primary/8 text-primary'
+                        : 'bg-accent/10 text-accent'
+                    }`}
+                  >
+                    {p.level}
+                  </span>
+                  <h3 className="font-display text-lg md:text-xl font-bold text-primary leading-snug">
+                    {p.shortTitle}
+                  </h3>
+                  <p className="text-sm text-gray-600">{p.department}</p>
+                </div>
+                {p.pdfView && (
+                  <a
+                    href={p.pdfView}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:text-accent/80 transition-colors whitespace-nowrap"
+                  >
+                    <ExternalLink size={14} />
+                    Open in a new tab
+                  </a>
+                )}
               </div>
 
-              {/* Body */}
-              <div className="p-5 flex-1 flex flex-col">
-                <span
-                  className={`inline-block w-fit px-3 py-1 rounded-full text-[11px] font-bold tracking-wider uppercase mb-3 ${
-                    p.level === 'Undergraduate'
-                      ? 'bg-primary/8 text-primary'
-                      : 'bg-accent/10 text-accent'
-                  }`}
-                >
-                  {p.level}
-                </span>
+              {/* Inline PDF viewer — #toolbar=0&navpanes=0 strips the
+                  browser's built-in PDF.js toolbar and thumbnail
+                  sidebar, leaving just the page content. */}
+              {p.pdfView ? (
+                <iframe
+                  src={`${p.pdfView}#toolbar=0&navpanes=0&scrollbar=0`}
+                  title={`${p.title} preview`}
+                  className="w-full h-[70vh] md:h-[80vh] rounded-2xl border border-gray-200 shadow-sm bg-gray-50 mb-4"
+                />
+              ) : (
+                <div className="rounded-2xl border border-dashed border-gray-300 bg-white p-12 text-center text-gray-400 text-sm mb-4">
+                  PDF coming soon
+                </div>
+              )}
 
-                <h3 className="font-display text-base md:text-lg font-bold text-primary leading-snug mb-1">
-                  {p.shortTitle}
-                </h3>
-                <p className="text-sm text-gray-600 mb-5">{p.department}</p>
-
-                {p.pdf ? (
+              {/* Download card */}
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-11 h-11 rounded-lg bg-gradient-to-br from-primary to-accent text-white flex items-center justify-center shrink-0 shadow-md">
+                    <BookOpen size={20} />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="font-semibold text-primary text-sm">{p.shortTitle}</div>
+                    <div className="text-xs text-gray-500">{p.department}</div>
+                  </div>
+                </div>
+                {p.pdfDownload ? (
                   <a
-                    href={p.pdf}
-                    download
-                    className="mt-auto inline-flex items-center justify-center gap-2 w-full px-5 py-3 bg-primary hover:bg-primary/90 text-white text-sm font-semibold rounded-md transition-colors"
+                    href={p.pdfDownload}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary/90 text-white text-sm font-semibold rounded-lg transition-colors shrink-0 whitespace-nowrap"
                   >
                     <Download size={16} />
-                    Download
+                    Download PDF
                   </a>
                 ) : (
-                  <span className="mt-auto inline-flex items-center justify-center gap-2 w-full px-5 py-3 bg-gray-100 text-gray-400 text-sm font-semibold rounded-md cursor-not-allowed">
+                  <span className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-gray-100 text-gray-400 text-sm font-semibold rounded-lg cursor-not-allowed shrink-0 whitespace-nowrap">
                     PDF coming soon
                   </span>
                 )}
               </div>
-            </article>
+            </div>
           ))}
         </div>
       )}

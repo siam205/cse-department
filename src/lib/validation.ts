@@ -288,6 +288,7 @@ export const uploadKindSchema = z.enum([
   'journey-cta-hero',
   // Phase 17
   'legal-hero',
+  'service-charter-pdf',
 ]);
 
 export const uploadSignSchema = z.object({
@@ -352,6 +353,13 @@ export const aboutOverviewUpdateSchema = z.object({
   paragraphs:        z.array(z.string()).default([]),
 });
 
+// {label, value}[] — office name / room number. Same shape as the
+// Phase 6 News.meta / Event.details keyValueArraySchema (defined
+// later in this file), inlined here to avoid a forward reference.
+const departmentLayoutRoomsSchema = z.array(
+  z.object({ label: z.string().min(1), value: z.string().min(1) }),
+).default([]);
+
 export const departmentLayoutUpdateSchema = z.object({
   title:         z.string().min(1).max(300),
   description:   optionalNullableString,
@@ -362,6 +370,7 @@ export const departmentLayoutUpdateSchema = z.object({
   pdfUrl:        optionalNullableString,
   pdfPublicId:   optionalNullableString,
   pdfFileName:   optionalNullableString,
+  rooms:         departmentLayoutRoomsSchema,
 });
 
 export const aboutMissionVisionUpdateSchema = z.object({
@@ -455,6 +464,13 @@ export const laboratoryLabCreateSchema = z.object({
 
 export const laboratoryLabUpdateSchema = laboratoryLabCreateSchema.partial();
 
+// {label, value}[] — person's name / designation. Inlined (rather than
+// reusing the later-defined keyValueArraySchema) to avoid a forward
+// reference within this file.
+const nameDesignationArraySchema = z.array(
+  z.object({ label: z.string().min(1), value: z.string().min(1) }),
+).default([]);
+
 export const aboutMechaClubUpdateSchema = z.object({
   heroTitle:                z.string().min(1).max(300),
   heroOverline:             optionalNullableString,
@@ -478,6 +494,10 @@ export const aboutMechaClubUpdateSchema = z.object({
   networkPrimaryCtaHref:    z.string().min(1),
   networkSecondaryCtaLabel: optionalNullableString,
   networkSecondaryCtaHref:  optionalNullableString,
+  leadership:               nameDesignationArraySchema,
+  executives:               nameDesignationArraySchema,
+  contactEmail:             z.string().email().nullable().optional().or(z.literal('')),
+  contactPhone:             optionalNullableString,
 });
 
 // ════════════════════════════════════════════════════════════════
@@ -727,6 +747,11 @@ export const researchPaperCreateSchema = z.object({
   link:            optionalNullableString,
   date:            optionalNullableString,
   publicationYear: z.number().int().min(1900).max(2100).nullable().optional(),
+  publisher:       optionalNullableString,
+  indexStatus:     optionalNullableString,
+  quartile:        optionalNullableString,
+  citeScore:       optionalNullableString,
+  authorPosition:  optionalNullableString,
 });
 
 export const researchPaperUpdateSchema = researchPaperCreateSchema;
@@ -765,6 +790,25 @@ export const syllabusCreateSchema = z.object({
 });
 
 export const syllabusUpdateSchema = syllabusCreateSchema;
+
+// ─── ServiceCharterLanding (singleton) + ServiceCharterItem ───────
+
+export const serviceCharterLandingUpdateSchema = z.object({
+  introBody:   z.string().min(1),
+  noteBody:    optionalNullableString,
+  pdfUrl:      optionalNullableString,
+  pdfPublicId: optionalNullableString,
+  pdfFileName: optionalNullableString,
+});
+
+export const serviceCharterItemCreateSchema = z.object({
+  slug:    z.string().min(1).max(160).regex(slugRegexHub, 'Slug must be lowercase letters, numbers, and hyphens only'),
+  service: z.string().min(1).max(500),
+  process: z.string().min(1),
+  roomNo:  optionalNullableString,
+});
+
+export const serviceCharterItemUpdateSchema = serviceCharterItemCreateSchema;
 
 // ─── TransportLanding (singleton) ───────────────────────────────
 
@@ -913,6 +957,44 @@ export const programFeeStructureCreateSchema = z.object({
 });
 
 export const programFeeStructureUpdateSchema = programFeeStructureCreateSchema;
+
+// ─── ProgramCourseStructure (1:1 with Program) ─────────────────
+//
+// Career Prospects + Course Structure + Credit Distribution + PDF.
+// `semesters` is a 2-level nesting (semester → courses), admin-edited
+// via a structured repeater (CourseStructureEditor, mirrors
+// ShiftsEditor's shifts→groups→tiers pattern) that serializes to JSON.
+//
+const programCourseSchema = z.object({
+  code:         z.string().min(1).max(50),
+  title:        z.string().min(1).max(300),
+  type:         z.string().max(50).optional().default(''),
+  credits:      z.number().min(0),
+  isSessional:  z.boolean().default(false),
+  prerequisite: z.string().max(200).optional().default(''),
+});
+
+const programSemesterSchema = z.object({
+  label:             z.string().min(1).max(200),
+  coreCredits:       z.number().min(0).default(0),
+  electiveCredits:   z.number().min(0).default(0),
+  labCredits:        z.number().min(0).default(0),
+  projectCredits:    z.number().min(0).default(0),
+  totalCredits:      z.number().min(0).default(0),
+  cumulativeCredits: z.number().min(0).default(0),
+  courses:           z.array(programCourseSchema).default([]),
+});
+
+export const programCourseStructureUpdateSchema = z.object({
+  programId:              z.string().min(1),
+  careerProspectsHeading: z.string().min(1).max(200),
+  careerProspectsBody:    z.string().min(1),
+  sessionalBadgeIconName: z.string().min(1).max(100),
+  semesters:              z.array(programSemesterSchema).default([]),
+  pdfUrl:                 optionalNullableString,
+  pdfPublicId:            optionalNullableString,
+  pdfFileName:            optionalNullableString,
+});
 
 // ─────────────────────────────────────────────────────────────────
 //  Phase 8c — Admission CMS Part 3 (Transfer Credits + Waiver/Scholarship)

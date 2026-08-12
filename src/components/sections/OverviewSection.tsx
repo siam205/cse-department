@@ -52,7 +52,7 @@ universities.
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="order-1 lg:order-2 overflow-hidden"
+            className="order-1 lg:order-2 overflow-hidden rounded-2xl shadow-md"
           >
             <Image
               src="/assets/cse_dept.webp"
@@ -60,7 +60,7 @@ universities.
               width={1600}
               height={900}
               sizes="(min-width: 1024px) 540px, 100vw"
-              className="h-auto w-full object-cover lg:h-[294px]"
+              className="h-auto w-full rounded-2xl object-cover lg:h-[294px]"
             />
           </motion.div>
         </div>

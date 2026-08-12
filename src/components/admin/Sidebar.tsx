@@ -104,12 +104,14 @@ const NEWSLETTER_NAV: NavItem[] = [
 ];
 
 const STUDENT_SOCIETY_NAV: NavItem[] = [
-  { href: '/admin/alumni',          label: 'Alumni',          icon: UserCircle2 },
-  { href: '/admin/clubs',           label: 'Clubs',           icon: Users2 },
-  { href: '/admin/faqs',            label: 'FAQs',            icon: HelpCircle },
-  { href: '/admin/visitors',        label: 'Visitors',        icon: Sparkles },
-  { href: '/admin/research-papers', label: 'Research Papers', icon: Library },
-  { href: '/admin/syllabus',        label: 'Syllabus',        icon: BookText },
+  { href: '/admin/alumni',                  label: 'Alumni',                    icon: UserCircle2 },
+  { href: '/admin/clubs',                   label: 'Clubs',                     icon: Users2 },
+  { href: '/admin/faqs',                    label: 'FAQs',                      icon: HelpCircle },
+  { href: '/admin/visitors',                label: 'Visitors',                  icon: Sparkles },
+  { href: '/admin/research-papers',         label: 'Research Papers',           icon: Library },
+  { href: '/admin/syllabus',                label: 'Syllabus',                  icon: BookText },
+  { href: '/admin/service-charter-items',   label: 'Service Charter',           icon: ClipboardList },
+  { href: '/admin/service-charter-landing', label: 'Service Charter Landing',   icon: Info },
 ];
 
 const CAMPUS_SERVICES_NAV: NavItem[] = [

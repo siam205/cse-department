@@ -57,6 +57,7 @@ export default async function DashboardHome() {
     newsCount, eventCount, noticeCount, galleryCount,
     alumniCount, clubCount, faqCount, visitorCount,
     researchPaperCount, busRouteCount, syllabusCount,
+    serviceCharterItemCount,
     admissionNoticeCount, prospectusEntryCount,
     admissionRequirementsConfigured, programFeeStructureCount,
     admissionTransferCreditsConfigured, waiverScholarshipLandingConfigured,
@@ -83,6 +84,7 @@ export default async function DashboardHome() {
     prisma.researchPaper.count(),
     prisma.busRoute.count(),
     prisma.syllabus.count(),
+    prisma.serviceCharterItem.count(),
     prisma.admissionNotice.count(),
     prisma.prospectusEntry.count(),
     prisma.admissionRequirements.count(),
@@ -143,6 +145,7 @@ export default async function DashboardHome() {
           <StatCard label="Research Papers" value={researchPaperCount} />
           <StatCard label="Bus Routes" value={busRouteCount} />
           <StatCard label="Syllabus" value={syllabusCount} />
+          <StatCard label="Service Charter Items" value={serviceCharterItemCount} />
           <StatCard label="Admission Notices" value={admissionNoticeCount} />
           <StatCard label="Prospectus Entries" value={prospectusEntryCount} />
           <StatCard label="Admission Requirements"
@@ -338,6 +341,18 @@ export default async function DashboardHome() {
             icon={MapIcon}
             title="Transport Landing"
             desc="Page chrome — intro, banner, instructions"
+          />
+          <ActionCard
+            href="/admin/service-charter-items"
+            icon={ClipboardList}
+            title="Manage Service Charter"
+            desc="Numbered service cards — process + room no."
+          />
+          <ActionCard
+            href="/admin/service-charter-landing"
+            icon={Info}
+            title="Service Charter Landing"
+            desc="Page chrome — intro, note, printable PDF"
           />
           <ActionCard
             href="/admin/admission-notices"

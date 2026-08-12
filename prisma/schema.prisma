@@ -166,6 +166,9 @@ model Program {
   // Program admin form stays focused on academic metadata (per
   // constraint #12); fee structure lives at /admin/program-fee-structures.
   feeStructure    ProgramFeeStructure?
+  // Career Prospects + Course Structure + Credit Distribution + PDF
+  // download, editable at /admin/programs/[id]/course-structure.
+  courseStructure ProgramCourseStructure?
 
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
@@ -507,6 +510,18 @@ model AboutMechaClub {
   networkPrimaryCtaHref    String
   networkSecondaryCtaLabel String?
   networkSecondaryCtaHref  String?
+
+  // Leadership + Executive Committee — both [{label, value}][] (label =
+  // person's name, value = designation), reusing the KeyValueListEditor
+  // shape rather than a bespoke {name, designation} type. leadership =
+  // faculty advisors + student President/VP; executives = the rest of
+  // the student committee. Both optional/empty-array-default so the
+  // section can be hidden until populated.
+  leadership               Json     @default("[]")
+  executives               Json     @default("[]")
+  contactEmail             String?
+  contactPhone             String?
+
   updatedAt                DateTime @updatedAt
 
   @@map("about_mecha_club")
@@ -656,10 +671,17 @@ model News {
   // meta — Json [{label,value}]: optional extra rows (Participants /
   // Location / Period / Organising Partner …). Defaults to empty array.
   meta          Json
+  // displayOrder — admin-controlled "serial" position, drag-reorderable
+  // in /admin/news. Both the admin list and the public /news + homepage
+  // NewsSection surfaces sort by this instead of publishedAt, so the
+  // chair can curate display order independent of the actual publish
+  // date (e.g. keep a flagship story pinned above newer routine posts).
+  displayOrder  Int      @default(0)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
   @@index([publishedAt])
+  @@index([displayOrder])
   @@map("news")
 }
 
@@ -836,6 +858,17 @@ model ResearchPaper {
   // structured sort key.
   date            String?
   publicationYear Int?
+
+  // Bibliometric metadata — sourced from the department's Research
+  // Publication tracking sheet. All optional/free-text since source
+  // coverage is inconsistent across rows (e.g. conference papers have
+  // no quartile/CiteScore).
+  publisher       String?  @db.Text // journal / publisher / conference venue
+  indexStatus     String?           // "Scopus", "Scopus & WoS (SSCI)", "Best Paper Award", …
+  quartile        String?           // "Q1".."Q4"
+  citeScore       String?           // free-form — "CiteScore: 3.9", "IF: 2.3", "4.385"
+  authorPosition  String?           // "Corresponding", "1st", "2nd", …
+
   displayOrder    Int
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
@@ -886,6 +919,43 @@ model Syllabus {
 
   @@index([displayOrder])
   @@map("syllabus")
+}
+
+// Singleton — the chrome around the ServiceCharterItem grid on
+// /student-society/service-charter. Mirrors the TransportLanding /
+// BusRoute split below: page-level copy here, one row per service
+// in ServiceCharterItem.
+model ServiceCharterLanding {
+  id            String   @id @default("singleton")
+  introBody     String   @db.Text
+  noteBody      String?  @db.Text
+  // PDF attachment — nullable so admin can save the page before a
+  // printable version exists. Same Syllabus/DepartmentLayout pattern:
+  // delivered through /api/cloudinary/download so the signed URL is
+  // generated per-click instead of baked into this ISR-cached page.
+  pdfUrl        String?
+  pdfPublicId   String?
+  pdfFileName   String?
+  updatedAt     DateTime @updatedAt
+
+  @@map("service_charter_landing")
+}
+
+model ServiceCharterItem {
+  id           String   @id @default(cuid())
+  slug         String   @unique
+  service      String   @db.Text
+  process      String   @db.Text
+  // roomNo — free text: a single room ("501"), a comma list
+  // ("501, 311"), or a named location ("Reception Desk"). Nullable
+  // for services with no fixed office (e.g. "visit the website").
+  roomNo       String?
+  displayOrder Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([displayOrder])
+  @@map("service_charter_item")
 }
 
 // Singleton — the chrome around the BusRoute grid on /transport-service.
@@ -992,6 +1062,10 @@ model DepartmentLayout {
   pdfUrl        String?
   pdfPublicId   String?
   pdfFileName   String?
+  // rooms — Json {label, value}[]: the office/room directory table
+  // rendered above the downloadable cover+PDF. label = office name,
+  // value = room number. Reuses the Phase 6 KeyValueListEditor shape.
+  rooms         Json?
   updatedAt     DateTime @updatedAt
 
   @@map("department_layout")
@@ -1055,6 +1129,43 @@ model ProgramFeeStructure {
 
   @@index([displayOrder])
   @@map("program_fee_structure")
+}
+
+// Cascade so deleting a Program tears down its course structure
+// cleanly. 1:1 with Program, same pattern as ProgramFeeStructure.
+// Renders the Career Prospects + Course Structure + Credit
+// Distribution + Download PDF block on /programs/[degreeCode],
+// editable at /admin/programs/[id]/course-structure.
+model ProgramCourseStructure {
+  id        String  @id @default(cuid())
+  programId String  @unique
+  program   Program @relation(fields: [programId], references: [id], onDelete: Cascade)
+
+  careerProspectsHeading String @default("Career Prospects")
+  careerProspectsBody    String @db.Text
+
+  // Lucide icon name shown on the "Sessional" course badge in the
+  // Course Structure table — admin-editable via IconInputField.
+  sessionalBadgeIconName String @default("FlaskConical")
+
+  // [{ label, coreCredits, electiveCredits, labCredits, projectCredits,
+  //    totalCredits, cumulativeCredits,
+  //    courses: [{ code, title, type, credits, isSessional, prerequisite }] }]
+  // One entry per semester, in display order. Structured admin editor
+  // (2-level nesting, mirrors ShiftsEditor's shifts→groups→tiers
+  // pattern) serializes this as a single Json blob.
+  semesters Json
+
+  // "Download PDF" button — static admin-uploaded PDF (Syllabus
+  // pattern), not dynamically generated from `semesters`.
+  pdfUrl        String?
+  pdfPublicId   String?
+  pdfFileName   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("program_course_structure")
 }
 
 // ─────────────────────────────────────────────────────────────────

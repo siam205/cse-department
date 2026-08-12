@@ -25,11 +25,11 @@ interface ContactEmailPayload {
 
 // onboarding@resend.dev is Resend's built-in test sender that
 // requires no domain verification. For a verified custom domain
-// (e.g. noreply@me.su.edu.bd), add the domain in resend.com →
+// (e.g. noreply@cse.su.edu.bd), add the domain in resend.com →
 // Domains and update this constant. The DB field
 // UniversityIdentity.contactSubmissionEmail is the RECEIVING side;
 // FROM_ADDRESS is the SENDING side.
-const FROM_ADDRESS = 'Sonargaon ME Contact <onboarding@resend.dev>';
+const FROM_ADDRESS = 'Sonargaon CSE Contact <onboarding@resend.dev>';
 
 export async function sendContactNotification(
   payload: ContactEmailPayload,
@@ -99,7 +99,7 @@ function renderHtml(p: ContactEmailPayload): string {
 <html><body style="margin:0;background:#f6f6f8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
   <div style="max-width:640px;margin:24px auto;background:#fff;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;">
     <div style="background:#2B3175;color:#fff;padding:18px 24px;">
-      <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;opacity:0.85;">Sonargaon ME</div>
+      <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;opacity:0.85;">Sonargaon CSE</div>
       <div style="font-size:18px;font-weight:700;margin-top:4px;">New contact form submission</div>
     </div>
     <div style="padding:24px;">

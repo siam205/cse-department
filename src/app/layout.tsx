@@ -25,16 +25,16 @@ const hindSiliguri = Hind_Siliguri({
 });
 
 const SITE_URL = 'https://mechanical-engineering-olive.vercel.app';
-const SITE_NAME = 'Sonargaon University — ME Department';
+const SITE_NAME = 'Sonargaon University — CSE Department';
 const SITE_DESCRIPTION =
-  'Department of Mechanical Engineering at Sonargaon University — programs, faculty, research areas, labs, admissions, and campus services.';
+  'Department of Computer Science & Engineering at Sonargaon University — programs, faculty, research areas, labs, admissions, and campus services.';
 const OG_IMAGE = '/assets/og-banner.webp';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
     default: SITE_NAME,
-    template: '%s — Sonargaon University ME',
+    template: '%s — Sonargaon University CSE',
   },
   description: SITE_DESCRIPTION,
   alternates: {
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
         url: OG_IMAGE,
         width: 1200,
         height: 630,
-        alt: 'Sonargaon University — Department of Mechanical Engineering',
+        alt: 'Sonargaon University — Department of Computer Science & Engineering',
       },
     ],
   },

@@ -93,12 +93,16 @@ export async function createNewsAction(
     };
   }
 
+  const last = await prisma.news.findFirst({ orderBy: { displayOrder: 'desc' }, select: { displayOrder: true } });
+  const displayOrder = (last?.displayOrder ?? -1) + 1;
+
   try {
     await prisma.news.create({
       data: {
         ...parsed.data,
         body: parsed.data.body as Prisma.InputJsonValue,
         meta: parsed.data.meta as unknown as Prisma.InputJsonValue,
+        displayOrder,
       },
     });
   } catch (e: unknown) {
@@ -165,5 +169,24 @@ export async function deleteNewsAction(id: string): Promise<ActionResult> {
     return { ok: false, error: e instanceof Error ? e.message : 'Database error' };
   }
   revalidateNewsSurfaces(slug ?? undefined);
+  return { ok: true };
+}
+
+export async function reorderNewsAction(ids: string[]): Promise<ActionResult> {
+  const denied = await requireAuth();
+  if (denied) return denied;
+  const existing = await prisma.news.findMany({ select: { id: true } });
+  const existingIds = new Set(existing.map((n) => n.id));
+  if (ids.length !== existingIds.size || !ids.every((id) => existingIds.has(id))) {
+    return { ok: false, error: 'Reorder list must include exactly the existing news articles' };
+  }
+  try {
+    await prisma.$transaction(
+      ids.map((id, index) => prisma.news.update({ where: { id }, data: { displayOrder: index } })),
+    );
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : 'Database error' };
+  }
+  revalidateNewsSurfaces();
   return { ok: true };
 }

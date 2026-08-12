@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation';
 import { Pencil, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import type { News } from '@prisma/client';
-import { deleteNewsAction } from '@/lib/admin-actions/news';
+import SortableList from '@/components/admin/SortableList';
+import { deleteNewsAction, reorderNewsAction } from '@/lib/admin-actions/news';
 import { useAdminListItems } from '@/lib/hooks/useAdminListItems';
 import { useConfirm } from '@/components/admin/ConfirmDialogProvider';
 
@@ -47,10 +48,15 @@ export default function NewsList({ items: initialItems }: { items: News[] }) {
   }
 
   return (
-    <ul className="space-y-2">
-      {items.map((article) => (
-        <li key={article.id}
-            className="bg-white border border-gray-200 rounded-lg p-3 flex items-center justify-between gap-4">
+    <SortableList
+      items={items}
+      getId={(article) => article.id}
+      onReorder={async (ids) => {
+        const res = await reorderNewsAction(ids);
+        if (!res.ok) throw new Error(res.error);
+      }}
+      renderItem={(article) => (
+        <div className="flex items-center justify-between gap-4 min-w-0">
           <div className="flex items-center gap-3 min-w-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -84,8 +90,8 @@ export default function NewsList({ items: initialItems }: { items: News[] }) {
               <Trash2 size={16} />
             </button>
           </div>
-        </li>
-      ))}
-    </ul>
+        </div>
+      )}
+    />
   );
 }

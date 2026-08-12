@@ -5,9 +5,9 @@ import Container from '@/components/ui/Container';
 import { getVisitors, getPageHero } from '@/lib/identity';
 
 export const metadata = {
-  title: 'Visitors — Department of Mechanical Engineering',
+  title: 'Visitors — Department of Computer Science & Engineering',
   description:
-    'Distinguished visitors and guests of the Department of Mechanical Engineering, Sonargaon University.',
+    'Distinguished visitors and guests of the Department of Computer Science & Engineering, Sonargaon University.',
 };
 
 // Defensive Json read — quote column is Prisma `Json` (string[]).
@@ -35,8 +35,8 @@ export default async function VisitorsPage() {
         <div className="mx-auto max-w-3xl text-center mb-10 md:mb-14">
           <p className="text-base md:text-lg text-gray-700 leading-[1.85]">
             Distinguished guests, industry leaders, and visiting academics who
-            have shared their experience with the Department of Mechanical
-            Engineering at Sonargaon University.
+            have shared their experience with the Department of Computer
+            Science & Engineering at Sonargaon University.
           </p>
         </div>
 

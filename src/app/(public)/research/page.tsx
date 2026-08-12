@@ -1,7 +1,16 @@
-import { Calendar, MapPin, Users, FileText } from 'lucide-react';
+import { Calendar, MapPin, Users, FileText, BookOpen, Award, BadgeCheck } from 'lucide-react';
 import PageShell from '@/components/layout/PageShell';
 import Container from '@/components/ui/Container';
 import { getResearchPapers, getPageHero } from '@/lib/identity';
+
+// Q1 (best) → Q4, colour-coded so a scan of the grid reads quality at a
+// glance. Falls back to a neutral pill for any other quartile string.
+const QUARTILE_STYLES: Record<string, string> = {
+  Q1: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+  Q2: 'bg-sky-50 text-sky-700 border-sky-200',
+  Q3: 'bg-amber-50 text-amber-700 border-amber-200',
+  Q4: 'bg-gray-100 text-gray-600 border-gray-200',
+};
 
 export const metadata = {
   title: 'Research — Department of Computer Science & Engineering',
@@ -57,9 +66,9 @@ export default async function ResearchPage() {
 
                 <div className="flex-1 min-w-0">
                   <h3 className="text-[15px] md:text-[16px] font-bold leading-snug text-primary mb-3">
-                    {'link' in paper && paper.link ? (
+                    {paper.link ? (
                       <a
-                        href={paper.link as string}
+                        href={paper.link}
                         target="_blank"
                         rel="nofollow noopener noreferrer"
                         className="hover:text-accent transition-colors"
@@ -78,17 +87,57 @@ export default async function ResearchPage() {
                         {paper.date}
                       </span>
                     )}
+                    {paper.publisher && (
+                      <span className="inline-flex items-center gap-1.5 text-gray-600">
+                        <BookOpen size={13} className="text-accent" />
+                        {paper.publisher}
+                      </span>
+                    )}
                   </div>
 
                   <div className="flex items-start gap-2 mb-2 text-[13px] leading-[1.6]">
                     <Users size={13} className="shrink-0 mt-1 text-accent" />
-                    <span className="text-gray-700 font-medium">{paper.authors}</span>
+                    <span className="text-gray-700 font-medium">
+                      {paper.authors}
+                      {paper.authorPosition && (
+                        <span className="ml-1.5 text-[11px] font-semibold text-accent">
+                          ({paper.authorPosition} Author)
+                        </span>
+                      )}
+                    </span>
                   </div>
 
-                  <div className="flex items-start gap-2 text-[12.5px] leading-[1.6]">
+                  <div className="flex items-start gap-2 mb-3 text-[12.5px] leading-[1.6]">
                     <MapPin size={13} className="shrink-0 mt-1 text-gray-400" />
                     <span className="text-gray-500">{paper.area}</span>
                   </div>
+
+                  {(paper.indexStatus || paper.quartile || paper.citeScore) && (
+                    <div className="flex flex-wrap gap-1.5">
+                      {paper.indexStatus && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border border-primary/20 bg-primary/5 text-[11px] font-semibold text-primary">
+                          <BadgeCheck size={11} />
+                          {paper.indexStatus.replace(/\s*\n\s*/g, ' ')}
+                        </span>
+                      )}
+                      {paper.quartile && (
+                        <span
+                          className={`inline-flex items-center px-2 py-0.5 rounded-full border text-[11px] font-semibold ${
+                            QUARTILE_STYLES[paper.quartile.trim().toUpperCase()] ??
+                            'bg-gray-100 text-gray-600 border-gray-200'
+                          }`}
+                        >
+                          {paper.quartile}
+                        </span>
+                      )}
+                      {paper.citeScore && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border border-amber-200 bg-amber-50 text-[11px] font-semibold text-amber-700">
+                          <Award size={11} />
+                          {paper.citeScore.replace(/\s*\n\s*/g, ' · ')}
+                        </span>
+                      )}
+                    </div>
+                  )}
                 </div>
               </article>
             ))}

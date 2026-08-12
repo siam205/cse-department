@@ -18,6 +18,16 @@ function emptyToNull(value: FormDataEntryValue | null): string | null {
   return trimmed ? trimmed : null;
 }
 
+function parseJsonArray(value: FormDataEntryValue | null): unknown[] {
+  if (typeof value !== 'string' || value.trim() === '') return [];
+  try {
+    const parsed = JSON.parse(value);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
 export async function updateDepartmentLayoutAction(
   _prev: ActionResult | { ok: null },
   formData: FormData,
@@ -35,6 +45,7 @@ export async function updateDepartmentLayoutAction(
     pdfUrl:        emptyToNull(formData.get('pdfUrl')),
     pdfPublicId:   emptyToNull(formData.get('pdfPublicId')),
     pdfFileName:   emptyToNull(formData.get('pdfFileName')),
+    rooms:         parseJsonArray(formData.get('rooms')),
   });
 
   if (!parsed.success) {

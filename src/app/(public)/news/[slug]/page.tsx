@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const article = await getNewsBySlug(slug);
   if (!article) return { title: 'News article not found' };
   return {
-    title: `${article.shortTitle} — Department of Mechanical Engineering`,
+    title: `${article.shortTitle} — Department of Computer Science & Engineering`,
     description: article.summary,
   };
 }

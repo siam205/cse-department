@@ -4,6 +4,7 @@ import { useActionState, useEffect, useState } from 'react';
 import type { DepartmentLayout } from '@prisma/client';
 import { toast } from 'sonner';
 import ImageUploader from '@/components/admin/ImageUploader';
+import KeyValueListEditor from '@/components/admin/KeyValueListEditor';
 import {
   updateDepartmentLayoutAction,
   type ActionResult,
@@ -36,6 +37,20 @@ export default function DepartmentLayoutForm({ initial }: { initial: DepartmentL
         <TextField label="Description" name="description"
                    defaultValue={initial?.description ?? ''}
                    placeholder="View or download the department layout." />
+      </Card>
+
+      <Card title="Office / room directory">
+        <p className="text-xs text-gray-500 -mt-2">
+          Rendered as a table above the downloadable layout document. Label = office name, value = room number.
+        </p>
+        <KeyValueListEditor
+          name="rooms"
+          initialValue={initial?.rooms ?? []}
+          labelPlaceholder="Office name (e.g. Office of the Head, Dept. of CSE)"
+          valuePlaceholder="Room no. (e.g. 607, 202)"
+          addButtonLabel="Add office"
+          emptyHint="No offices yet."
+        />
       </Card>
 
       <Card title="Hero image">

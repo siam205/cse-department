@@ -118,7 +118,51 @@ async function seedPrograms() {
   console.log('✓ Programs seeded');
 }
 
+async function seedProgramCourseStructure() {
+  const program = await prisma.program.findUnique({ where: { degreeCode: 'BSc-ME' } });
+  if (!program) {
+    console.log('⚠ BSc-ME program not found; skipping course structure seed');
+    return;
+  }
+  const count = await prisma.programCourseStructure.count({ where: { programId: program.id } });
+  if (count > 0) {
+    console.log('✓ Program course structure already seeded');
+    return;
+  }
+  // Placeholder only — this is a code/feature port, not a content
+  // pass. Real course structure (career prospects text + per-semester
+  // course lists + credit distribution) needs a real curriculum
+  // source and should be added via /admin/programs/[id]/course-structure
+  // once that's available, same as it was for the Textile department.
+  await prisma.programCourseStructure.create({
+    data: {
+      programId: program.id,
+      careerProspectsHeading: 'Career Prospects',
+      careerProspectsBody:
+        '<p>Add this program’s career prospects here via /admin/programs/[id]/course-structure.</p>',
+      semesters: [] as unknown as Prisma.InputJsonValue,
+      pdfUrl: null,
+      pdfPublicId: null,
+      pdfFileName: null,
+    },
+  });
+  console.log('✓ Program course structure seeded (placeholder — add real content via admin panel)');
+}
+
 async function seedResearchAreas() {
+  // Count-gated like the other multi-row tables — only seeds these
+  // defaults into a genuinely empty table. Never re-inserts once any
+  // row exists, so admin-curated areas (added/renamed/deleted via
+  // /admin/research-areas) are never overwritten or resurrected by a
+  // later `db:seed` run. NOTE: these are still the original
+  // Mechanical-era placeholder topics — replacing them with real CSE
+  // research areas is a separate content pass, not part of this fix.
+  const count = await prisma.researchArea.count();
+  if (count > 0) {
+    console.log(`✓ Research areas already seeded (${count} rows)`);
+    return;
+  }
+
   const areas = [
     { iconName: 'Flame',  areaName: 'Thermodynamics & Heat Transfer',   displayOrder: 1 },
     { iconName: 'Waves',  areaName: 'Fluid Mechanics & CFD',            displayOrder: 2 },
@@ -129,16 +173,8 @@ async function seedResearchAreas() {
     { iconName: 'Car',    areaName: 'Automotive Engineering',           displayOrder: 7 },
   ];
 
-  let inserted = 0;
-  for (const area of areas) {
-    const existing = await prisma.researchArea.findFirst({
-      where: { areaName: area.areaName },
-    });
-    if (existing) continue;
-    await prisma.researchArea.create({ data: area });
-    inserted += 1;
-  }
-  console.log(`✓ Research areas seeded (${inserted} new)`);
+  await prisma.researchArea.createMany({ data: areas });
+  console.log(`✓ Research areas seeded (${areas.length} new)`);
 }
 
 async function bootstrapSuperAdmin() {
@@ -1306,7 +1342,12 @@ async function seedAdmissionNotice() {
   await prisma.admissionNotice.upsert({
     where: { slug },
     create: data,
-    update: data,
+    // Idempotent: re-running won't override admin edits to an
+    // existing row (matches the safe pattern used everywhere else in
+    // this file — an unconditional `update: data` here previously
+    // caused every `db:seed` run to silently reset admin-edited
+    // content back to these hardcoded defaults).
+    update: {},
   });
   console.log('✓ AdmissionNotice seeded (1 row)');
 }
@@ -1360,7 +1401,8 @@ async function seedAdmissionRequirements() {
   await prisma.admissionRequirements.upsert({
     where:  { id: 'singleton' },
     create: { id: 'singleton', ...data },
-    update: data,
+    // Idempotent — see seedAdmissionNotice comment.
+    update: {},
   });
   console.log('✓ AdmissionRequirements seeded (singleton)');
 }
@@ -1478,7 +1520,8 @@ async function seedProgramFeeStructures() {
   await prisma.programFeeStructure.upsert({
     where:  { programId: program.id },
     create: data,
-    update: data,
+    // Idempotent — see seedAdmissionNotice comment.
+    update: {},
   });
   console.log(`✓ ProgramFeeStructure seeded (1 row — ${program.degreeCode})`);
 }
@@ -1503,7 +1546,8 @@ async function seedProspectusEntries() {
     await prisma.prospectusEntry.upsert({
       where: { slug: row.slug },
       create: row,
-      update: row,
+      // Idempotent — see seedAdmissionNotice comment.
+      update: {},
     });
   }
   console.log(`✓ ProspectusEntry seeded (${rows.length} row${rows.length === 1 ? '' : 's'})`);
@@ -1574,7 +1618,8 @@ async function seedAdmissionTransferCredits() {
   await prisma.admissionTransferCredits.upsert({
     where:  { id: 'singleton' },
     create: { id: 'singleton', ...data },
-    update: data,
+    // Idempotent — see seedAdmissionNotice comment.
+    update: {},
   });
   console.log('✓ AdmissionTransferCredits seeded (singleton)');
 }
@@ -1616,7 +1661,8 @@ async function seedWaiverScholarshipLanding() {
   await prisma.waiverScholarshipLanding.upsert({
     where:  { id: 'singleton' },
     create: { id: 'singleton', ...data },
-    update: data,
+    // Idempotent — see seedAdmissionNotice comment.
+    update: {},
   });
   console.log('✓ WaiverScholarshipLanding seeded (singleton)');
 }
@@ -1682,7 +1728,8 @@ async function seedWaiverCategories() {
     await prisma.waiverCategory.upsert({
       where:  { slug: cat.slug },
       create: data,
-      update: data,
+      // Idempotent — see seedAdmissionNotice comment.
+      update: {},
     });
   }
   console.log(`✓ WaiverCategory seeded (${categories.length} rows)`);
@@ -1699,7 +1746,8 @@ async function seedScholarships() {
     await prisma.scholarship.upsert({
       where:  { slug: slab.slug },
       create: slab,
-      update: slab,
+      // Idempotent — see seedAdmissionNotice comment.
+      update: {},
     });
   }
   console.log(`✓ Scholarship seeded (${slabs.length} rows)`);
@@ -1799,7 +1847,8 @@ async function seedCampusLocations() {
     await prisma.campusLocation.upsert({
       where: { slug: c.slug },
       create: c,
-      update: c,
+      // Idempotent — see seedAdmissionNotice comment.
+      update: {},
     });
   }
   console.log(`✓ CampusLocation seeded (${campuses.length} rows)`);
@@ -1920,10 +1969,10 @@ const TERMS_SECTIONS = [
 async function seedLegalPagesContent() {
   await prisma.legalPagesContent.upsert({
     where: { id: 'singleton' },
-    update: {
-      privacySections: PRIVACY_SECTIONS,
-      termsSections:   TERMS_SECTIONS,
-    },
+    // Idempotent — see seedAdmissionNotice comment. Previously this
+    // unconditionally reset privacySections/termsSections to these
+    // hardcoded defaults on every db:seed run, wiping admin edits.
+    update: {},
     create: {
       id: 'singleton',
       privacyHeroTitle:                'Privacy Policy',
@@ -1948,6 +1997,7 @@ async function main() {
   await seedDepartmentIdentity();
   await seedUniversityIdentity();
   await seedPrograms();
+  await seedProgramCourseStructure();
   await seedResearchAreas();
   await seedFaculty();
   await bootstrapSuperAdmin();

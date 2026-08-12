@@ -5,9 +5,9 @@ import { sanitizeHtml } from '@/lib/sanitize-html';
 import LabFacilityClient from './LabFacilityClient';
 
 export const metadata = {
-  title: 'Lab Facilities — Department of Mechanical Engineering',
+  title: 'Lab Facilities — Department of Computer Science & Engineering',
   description:
-    'Departmental laboratories at Sonargaon University ME — software, networking, AI, database, IoT, embedded systems, and more.',
+    'Departmental laboratories at Sonargaon University CSE — software, networking, AI, database, IoT, embedded systems, and more.',
 };
 
 export default async function LabFacilityPage() {

@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { ArrowRight, Network } from 'lucide-react';
+import { ArrowRight, Network, Mail, Phone, UserRound } from 'lucide-react';
 import PageShell from '@/components/layout/PageShell';
 import Container from '@/components/ui/Container';
 import { getAboutMechaClub } from '@/lib/identity';
@@ -8,7 +8,7 @@ import { DynamicLucideIcon } from '@/components/ui/DynamicLucideIcon';
 import JoinMechaClubButton from './JoinMechaClubButton';
 
 export const metadata = {
-  title: 'Programming Club — Department of Mechanical Engineering',
+  title: 'Programming Club — Department of Computer Science & Engineering',
   description:
     'SU Computer Science & Engineering Programming Club — building industry-ready engineers through coding competitions, workshops, hackathons, and project showcases.',
 };
@@ -38,6 +38,19 @@ function coerceStats(v: unknown): StatsRow[] {
     .filter((r) => r.value && r.label);
 }
 
+type PersonRow = { name: string; designation: string };
+
+function coercePeople(v: unknown): PersonRow[] {
+  if (!Array.isArray(v)) return [];
+  return v
+    .filter((r): r is Record<string, unknown> => typeof r === 'object' && r !== null)
+    .map((r) => ({
+      name:        typeof r.label === 'string' ? r.label : '',
+      designation: typeof r.value === 'string' ? r.value : '',
+    }))
+    .filter((r) => r.name);
+}
+
 function coerceActivities(v: unknown): ActivityRow[] {
   if (!Array.isArray(v)) return [];
   return v
@@ -63,6 +76,8 @@ export default async function MechaClubPage() {
 
   const stats = coerceStats(row.stats);
   const activities = coerceActivities(row.activities);
+  const leadership = coercePeople(row.leadership);
+  const executives = coercePeople(row.executives);
 
   return (
     <PageShell
@@ -178,6 +193,72 @@ export default async function MechaClubPage() {
           </section>
         )}
 
+        {/* Leadership section */}
+        {leadership.length > 0 && (
+          <section className="mb-16 md:mb-20">
+            <div className="text-center max-w-2xl mx-auto mb-10 md:mb-14">
+              <span className="inline-block text-accent text-[11px] font-bold tracking-[0.3em] uppercase mb-2">
+                Who Runs the Club
+              </span>
+              <h2 className="font-display text-3xl md:text-4xl font-bold text-primary leading-tight">
+                Club Leadership
+              </h2>
+              <div className="mt-3 mx-auto h-1 w-16 bg-accent rounded-full" />
+            </div>
+
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              {leadership.map((person) => (
+                <div
+                  key={person.name}
+                  className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 text-center"
+                >
+                  <div className="mx-auto mb-4 w-14 h-14 rounded-full bg-primary/5 text-primary flex items-center justify-center">
+                    <UserRound size={24} />
+                  </div>
+                  <h3 className="font-display text-[15px] font-bold text-primary leading-snug">
+                    {person.name}
+                  </h3>
+                  <p className="text-[13px] text-accent font-semibold mt-1">
+                    {person.designation}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Executive Committee section */}
+        {executives.length > 0 && (
+          <section className="mb-16 md:mb-20">
+            <div className="text-center max-w-2xl mx-auto mb-10 md:mb-14">
+              <span className="inline-block text-accent text-[11px] font-bold tracking-[0.3em] uppercase mb-2">
+                The Team Behind Every Event
+              </span>
+              <h2 className="font-display text-3xl md:text-4xl font-bold text-primary leading-tight">
+                Executive Committee
+              </h2>
+              <div className="mt-3 mx-auto h-1 w-16 bg-accent rounded-full" />
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {executives.map((person) => (
+                <div
+                  key={person.name}
+                  className="flex items-center gap-3 bg-white rounded-lg border border-gray-100 shadow-sm px-4 py-3"
+                >
+                  <div className="w-9 h-9 rounded-full bg-primary/5 text-primary flex items-center justify-center shrink-0">
+                    <UserRound size={16} />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-[13.5px] font-semibold text-primary truncate">{person.name}</div>
+                    <div className="text-[12px] text-gray-500 truncate">{person.designation}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* Network section */}
         <section className="relative bg-primary text-white rounded-2xl shadow-2xl">
           <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none">
@@ -202,6 +283,29 @@ export default async function MechaClubPage() {
               <p className="text-white/90 leading-[1.85] text-[15px] md:text-[16px] max-w-2xl">
                 {row.networkBody}
               </p>
+
+              {(row.contactEmail || row.contactPhone) && (
+                <div className="flex flex-wrap gap-x-6 gap-y-2 mt-6 pt-6 border-t border-white/15">
+                  {row.contactEmail && (
+                    <a
+                      href={`mailto:${row.contactEmail}`}
+                      className="inline-flex items-center gap-2 text-[13.5px] text-white/85 hover:text-white transition-colors"
+                    >
+                      <Mail size={15} className="text-button-yellow shrink-0" />
+                      {row.contactEmail}
+                    </a>
+                  )}
+                  {row.contactPhone && (
+                    <a
+                      href={`tel:${row.contactPhone}`}
+                      className="inline-flex items-center gap-2 text-[13.5px] text-white/85 hover:text-white transition-colors"
+                    >
+                      <Phone size={15} className="text-button-yellow shrink-0" />
+                      {row.contactPhone}
+                    </a>
+                  )}
+                </div>
+              )}
             </div>
 
             <div className="flex flex-col sm:flex-row lg:flex-col gap-3 shrink-0">

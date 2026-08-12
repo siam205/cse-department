@@ -11,14 +11,14 @@ export default async function NewsAdminPage() {
   const session = await getSession();
   if (!session?.user) redirect('/admin/login');
 
-  const news = await prisma.news.findMany({ orderBy: { publishedAt: 'desc' } });
+  const news = await prisma.news.findMany({ orderBy: { displayOrder: 'asc' } });
 
   return (
     <div className="space-y-8 max-w-3xl">
       <header>
         <h1 className="text-2xl font-display font-bold text-gray-900">News</h1>
         <p className="mt-1 text-sm text-gray-500">
-          Articles for <code className="font-mono">/news</code> and the homepage NewsSection. Sorted by published date (newest first).
+          Articles for <code className="font-mono">/news</code> and the homepage NewsSection. Drag to reorder — this is the order they display in, independent of published date.
         </p>
       </header>
 
@@ -27,7 +27,7 @@ export default async function NewsAdminPage() {
           <div>
             <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-500">Articles</h2>
             <p className="text-xs text-gray-400 mt-0.5">
-              {news.length} article{news.length === 1 ? '' : 's'}
+              {news.length} article{news.length === 1 ? '' : 's'}{news.length > 1 && ' · drag to reorder'}
             </p>
           </div>
           <Link

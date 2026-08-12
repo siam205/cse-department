@@ -4,9 +4,9 @@ import { getAboutOverview } from '@/lib/identity';
 import { sanitizeHtml } from '@/lib/sanitize-html';
 
 export const metadata = {
-  title: 'Overview — Department of Mechanical Engineering',
+  title: 'Overview — Department of Computer Science & Engineering',
   description:
-    'Overview of the Department of Mechanical Engineering — programs, vision, and the scope of mechanical engineering as a discipline and a career.',
+    'Overview of the Department of Computer Science & Engineering — programs, vision, and the scope of computer science and engineering as a discipline and a career.',
 };
 
 export default async function OverviewPage() {

@@ -1,12 +1,11 @@
 import PageShell from '@/components/layout/PageShell';
 import Container from '@/components/ui/Container';
 import { getProspectusEntries, getPageHero } from '@/lib/identity';
-import { getPrivateDownloadUrl } from '@/lib/cloudinary';
 import ProspectusClient from './ProspectusClient';
 
 export const metadata = {
-  title: 'Prospectus — Department of Mechanical Engineering',
-  description: 'Program prospectus PDFs for Mechanical Engineering at Sonargaon University.',
+  title: 'Prospectus — Department of Computer Science & Engineering',
+  description: 'Program prospectus PDFs for Computer Science & Engineering at Sonargaon University.',
 };
 
 export default async function ProspectusPage() {
@@ -21,7 +20,18 @@ export default async function ProspectusPage() {
     department: p.department,
     level: p.level,
     cover: p.coverUrl,
-    pdf: p.pdfUrl && p.pdfPublicId ? getPrivateDownloadUrl(p.pdfPublicId) : '',
+    // Plain secure_url — safe to embed directly in an <iframe> for
+    // inline viewing (confirmed publicly reachable, no signing
+    // needed).
+    pdfView: p.pdfUrl ?? '',
+    // Routed through the dynamic /api/cloudinary/download redirect
+    // instead of baking a signed private_download_url (time-limited
+    // timestamp) into this ISR-cached page — the signature would go
+    // stale and Cloudinary would reject it with "Stale request" once
+    // the cached page is served more than ~1h after it was generated.
+    pdfDownload: p.pdfUrl && p.pdfPublicId
+      ? `/api/cloudinary/download?publicId=${encodeURIComponent(p.pdfPublicId)}&format=pdf`
+      : '',
   }));
 
   return (

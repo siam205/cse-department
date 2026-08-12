@@ -4,7 +4,7 @@ import { getNotices, getPageHero } from '@/lib/identity';
 import NoticesClient from './NoticesClient';
 
 export const metadata = {
-  title: 'Notice Board — Department of Mechanical Engineering',
+  title: 'Notice Board — Department of Computer Science & Engineering',
   description:
     'Departmental notices and announcements — registration, holidays, transport, and student services.',
 };

@@ -22,6 +22,14 @@ import { signUploadParams } from '@/lib/cloudinary';
 //
 export const POST = withErrorHandling(async (request) => {
   await requireUser();
+  const missing = ['CLOUDINARY_CLOUD_NAME', 'CLOUDINARY_API_KEY', 'CLOUDINARY_API_SECRET']
+    .filter((name) => !process.env[name]);
+  if (missing.length > 0) {
+    return NextResponse.json(
+      { error: `Cloudinary uploads are not configured. Missing: ${missing.join(', ')}. Add these variables to .env and restart Next.js.` },
+      { status: 503 },
+    );
+  }
   const body = await readJson(request);
   const { kind } = uploadSignSchema.parse(body);
   const params = signUploadParams(kind);
