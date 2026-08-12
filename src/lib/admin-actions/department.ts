@@ -47,6 +47,10 @@ export async function updateDepartmentAction(
     heroImage3PublicId:        emptyToNull(formData.get('heroImage3PublicId')),
     heroImage3Alt:             emptyToNull(formData.get('heroImage3Alt')),
     heroImage3VerticalPercent: formData.get('heroImage3VerticalPercent') ?? undefined,
+    overviewImageUrl:             emptyToNull(formData.get('overviewImageUrl')),
+    overviewImagePublicId:        emptyToNull(formData.get('overviewImagePublicId')),
+    overviewImageAlt:             emptyToNull(formData.get('overviewImageAlt')),
+    overviewImageVerticalPercent: formData.get('overviewImageVerticalPercent') ?? undefined,
   };
 
   const parsed = departmentUpdateSchema.safeParse(raw);

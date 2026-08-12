@@ -66,7 +66,11 @@ export default async function HomePage() {
         ]}
         breadcrumbLabel={dept.breadcrumbLabel}
       />
-      <OverviewSection />
+      <OverviewSection
+        imageUrl={dept.overviewImageUrl}
+        imageAlt={dept.overviewImageAlt}
+        imageVerticalPercent={dept.overviewImageVerticalPercent}
+      />
       <ProgramsSection programs={programs} />
       <QuickLinksSection />
       <NoticesSection notices={noticesTop} />

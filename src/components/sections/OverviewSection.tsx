@@ -4,7 +4,13 @@ import Image from 'next/image';
 import {motion} from 'motion/react';
 import Container from '../ui/Container';
 
-export default function OverviewSection() {
+type Props = {
+  imageUrl?: string | null;
+  imageAlt?: string | null;
+  imageVerticalPercent?: number;
+};
+
+export default function OverviewSection({ imageUrl, imageAlt, imageVerticalPercent = 50 }: Props) {
   return (
     <section className="bg-white py-8 md:py-16">
       <Container className="!max-w-[1120px]">
@@ -55,12 +61,13 @@ universities.
             className="order-1 lg:order-2 overflow-hidden rounded-2xl shadow-md"
           >
             <Image
-              src="/assets/cse_dept.webp"
-              alt="Sonargaon University Computer Science & Engineering students engaged in laboratory work"
+              src={imageUrl ?? '/assets/cse_dept.webp'}
+              alt={imageAlt ?? 'Sonargaon University Computer Science & Engineering students engaged in laboratory work'}
               width={1600}
               height={900}
               sizes="(min-width: 1024px) 540px, 100vw"
               className="h-auto w-full rounded-2xl object-cover lg:h-[294px]"
+              style={{ objectPosition: `center ${imageVerticalPercent}%` }}
             />
           </motion.div>
         </div>

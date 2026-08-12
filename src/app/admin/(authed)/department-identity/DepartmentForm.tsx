@@ -111,6 +111,28 @@ export default function DepartmentForm({ initial }: { initial: Initial }) {
         </div>
       </Card>
 
+      {/* ─── Overview section image ─── */}
+      <Card title="Homepage overview image">
+        <p className="text-xs text-gray-500 -mt-2">
+          The image next to the intro paragraph and Explore More / Dean&apos;s Message buttons on the homepage.
+        </p>
+        <ImageUploader
+          kind="department-hero"
+          name="overviewImage"
+          aspectRatio="wide"
+          label="Overview image"
+          initialUrl={initial?.overviewImageUrl}
+          initialPublicId={initial?.overviewImagePublicId}
+        />
+        <TextField label="Alt text" name="overviewImageAlt"
+                   defaultValue={initial?.overviewImageAlt ?? ''} />
+        <HeroImagePositionSlider
+          name="overviewImageVerticalPercent"
+          initialValue={initial?.overviewImageVerticalPercent}
+          label="Overview image vertical position"
+        />
+      </Card>
+
       {/* ─── Errors + submit ─── */}
       {state.ok === false && (
         <div role="alert"

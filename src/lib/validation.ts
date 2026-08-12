@@ -35,6 +35,10 @@ export const departmentUpdateSchema = z.object({
   heroImage3PublicId:        nullableString,
   heroImage3Alt:             optionalNullableString,
   heroImage3VerticalPercent: z.coerce.number().int().min(0).max(100).default(50),
+  overviewImageUrl:             optionalNullableString,
+  overviewImagePublicId:        optionalNullableString,
+  overviewImageAlt:             optionalNullableString,
+  overviewImageVerticalPercent: z.coerce.number().int().min(0).max(100).default(50),
 });
 
 // ─────────────────────────────────────────────────────────────────

@@ -105,6 +105,14 @@ model DepartmentIdentity {
   heroImage3PublicId        String?
   heroImage3Alt             String?
   heroImage3VerticalPercent Int      @default(50)
+  // Homepage "Department of CSE" overview-section image (the card next
+  // to the intro paragraph + Explore More / Dean's Message buttons).
+  // Nullable — falls back to the bundled /assets/cse_dept.webp on the
+  // public side until an admin uploads a replacement.
+  overviewImageUrl             String?
+  overviewImagePublicId        String?
+  overviewImageAlt             String?
+  overviewImageVerticalPercent Int      @default(50)
   updatedAt                 DateTime @updatedAt
 
   @@map("department_identity")

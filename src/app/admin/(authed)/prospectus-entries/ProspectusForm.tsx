@@ -38,7 +38,7 @@ export default function ProspectusForm({ initial }: { initial: ProspectusEntry |
       <Card title="Basics">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <TextField label="Slug" name="slug" required monospace
-                     defaultValue={initial?.slug ?? ''}                      placeholder="bsc-mechanical-engineering" />
+                     defaultValue={initial?.slug ?? ''}                      placeholder="bsc-cse" />
           <SelectField label="Level" name="level" required options={LEVELS}
                        defaultValue={initial?.level ?? 'Undergraduate'} />
         </div>
