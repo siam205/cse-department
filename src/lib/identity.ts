@@ -385,8 +385,16 @@ export const getVisitors = cache(async () => {
   return prisma.visitor.findMany({ orderBy: { displayOrder: 'asc' } });
 });
 
-export const getResearchPapers = cache(async () => {
-  return prisma.researchPaper.findMany({ orderBy: { displayOrder: 'asc' } });
+export const getResearchPapers = cache(async (opts?: { skip?: number; take?: number }) => {
+  return prisma.researchPaper.findMany({
+    orderBy: { displayOrder: 'asc' },
+    skip: opts?.skip,
+    take: opts?.take,
+  });
+});
+
+export const getResearchPapersCount = cache(async () => {
+  return prisma.researchPaper.count();
 });
 
 export const getBusRoutes = cache(async () => {

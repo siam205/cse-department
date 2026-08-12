@@ -1,7 +1,10 @@
-import { Calendar, MapPin, Users, FileText, BookOpen, Award, BadgeCheck } from 'lucide-react';
+import Link from 'next/link';
+import { Calendar, MapPin, Users, FileText, BookOpen, Award, BadgeCheck, ChevronLeft, ChevronRight } from 'lucide-react';
 import PageShell from '@/components/layout/PageShell';
 import Container from '@/components/ui/Container';
-import { getResearchPapers, getPageHero } from '@/lib/identity';
+import { getResearchPapers, getResearchPapersCount, getPageHero } from '@/lib/identity';
+
+const PAGE_SIZE = 20;
 
 // Q1 (best) → Q4, colour-coded so a scan of the grid reads quality at a
 // glance. Falls back to a neutral pill for any other quartile string.
@@ -18,11 +21,25 @@ export const metadata = {
     'Published research papers from the Department of Computer Science & Engineering, Sonargaon University.',
 };
 
-export default async function ResearchPage() {
-  const [papers, hero] = await Promise.all([
-    getResearchPapers(),
+type SearchParams = Promise<{ page?: string | string[] }>;
+
+export default async function ResearchPage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
+  const sp = await searchParams;
+  const rawPage = Array.isArray(sp.page) ? sp.page[0] : sp.page;
+  const pageNum = Math.max(1, Number.parseInt(rawPage ?? '1', 10) || 1);
+  const skip = (pageNum - 1) * PAGE_SIZE;
+
+  const [papers, total, hero] = await Promise.all([
+    getResearchPapers({ skip, take: PAGE_SIZE }),
+    getResearchPapersCount(),
     getPageHero('research'),
   ]);
+
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
   return (
     <PageShell
@@ -43,7 +60,7 @@ export default async function ResearchPage() {
           </p>
           <p className="mt-4 inline-flex items-center gap-2 text-[13px] font-semibold text-primary bg-primary/5 px-4 py-1.5 rounded-full">
             <FileText size={14} />
-            {papers.length} Publications
+            {total} Publications
           </p>
         </div>
 
@@ -52,6 +69,7 @@ export default async function ResearchPage() {
             <p className="text-gray-500">No research papers yet.</p>
           </div>
         ) : (
+          <>
           <div className="mx-auto max-w-6xl grid gap-5 md:gap-6 lg:grid-cols-2">
             {papers.map((paper, idx) => (
               <article
@@ -60,7 +78,7 @@ export default async function ResearchPage() {
               >
                 <div className="shrink-0">
                   <div className="w-11 h-11 rounded-full bg-primary text-white flex items-center justify-center font-display font-bold text-[15px]">
-                    {idx + 1}
+                    {skip + idx + 1}
                   </div>
                 </div>
 
@@ -142,6 +160,46 @@ export default async function ResearchPage() {
               </article>
             ))}
           </div>
+
+          {totalPages > 1 && (
+            <nav
+              aria-label="Research pagination"
+              className="mt-10 md:mt-14 flex items-center justify-center gap-2"
+            >
+              {pageNum > 1 ? (
+                <Link
+                  href={pageNum === 2 ? '/research' : `/research?page=${pageNum - 1}`}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white border border-gray-200 text-sm font-medium text-gray-700 hover:border-accent hover:text-accent transition-colors"
+                >
+                  <ChevronLeft size={16} />
+                  Previous
+                </Link>
+              ) : (
+                <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gray-100 text-sm text-gray-400 cursor-not-allowed">
+                  <ChevronLeft size={16} />
+                  Previous
+                </span>
+              )}
+              <span className="px-4 py-2 text-sm text-gray-600">
+                Page <span className="font-semibold text-primary">{pageNum}</span> of <span className="font-semibold text-primary">{totalPages}</span>
+              </span>
+              {pageNum < totalPages ? (
+                <Link
+                  href={`/research?page=${pageNum + 1}`}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white border border-gray-200 text-sm font-medium text-gray-700 hover:border-accent hover:text-accent transition-colors"
+                >
+                  Next
+                  <ChevronRight size={16} />
+                </Link>
+              ) : (
+                <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gray-100 text-sm text-gray-400 cursor-not-allowed">
+                  Next
+                  <ChevronRight size={16} />
+                </span>
+              )}
+            </nav>
+          )}
+          </>
         )}
       </Container>
     </PageShell>
