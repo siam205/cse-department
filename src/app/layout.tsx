@@ -28,7 +28,11 @@ const SITE_URL = 'https://mechanical-engineering-olive.vercel.app';
 const SITE_NAME = 'Sonargaon University — CSE Department';
 const SITE_DESCRIPTION =
   'Department of Computer Science & Engineering at Sonargaon University — programs, faculty, research areas, labs, admissions, and campus services.';
-const OG_IMAGE = '/assets/og-banner.webp';
+// Renamed (not just re-uploaded) from og-banner.webp so social
+// platforms that cache OG previews by URL (Facebook, LinkedIn,
+// WhatsApp, etc.) are forced to fetch fresh content instead of
+// continuing to serve their old cached snapshot.
+const OG_IMAGE = '/assets/og-banner-cse.webp';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

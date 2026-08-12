@@ -35,6 +35,11 @@ export default function ClubForm({ initial }: { initial: Club | null }) {
         <TextField label="Name" name="name" required defaultValue={initial?.name ?? ''} />
         <TextAreaField label="Description" name="description" required rows={4}
                        defaultValue={initial?.description ?? ''} />
+        <TextField label="Dedicated page link (optional)" name="href"
+                   defaultValue={initial?.href ?? ''} placeholder="/about/programming-club" />
+        <p className="text-xs text-gray-500 -mt-2">
+          If set, the card on the public club list links here. Leave blank for clubs without their own page.
+        </p>
       </Card>
 
       <Card title="Cover image">

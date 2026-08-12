@@ -1,5 +1,6 @@
 import Image from 'next/image';
-import { Users } from 'lucide-react';
+import Link from 'next/link';
+import { ArrowRight, Users } from 'lucide-react';
 import PageShell from '@/components/layout/PageShell';
 import Container from '@/components/ui/Container';
 import { getClubs, getPageHero } from '@/lib/identity';
@@ -40,40 +41,59 @@ export default async function ClubListPage() {
           </div>
         ) : (
           <div className="grid gap-6 md:gap-7 sm:grid-cols-2 lg:grid-cols-3">
-            {clubs.map((club) => (
-              <article
-                key={club.id}
-                className="flex flex-col bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg transition-shadow overflow-hidden"
-              >
-                <div className="relative aspect-[16/10] bg-gray-100 overflow-hidden">
-                  <Image
-                    src={club.imageUrl}
-                    alt={club.name}
-                    fill
-                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                    className="object-cover transition-transform duration-700 hover:scale-105"
-                  />
-                </div>
-
-                <div className="p-5 md:p-6 flex flex-col gap-3 flex-1">
-                  <div className="flex items-start gap-2">
-                    <Users size={18} className="shrink-0 mt-1 text-accent" />
-                    <div className="flex-1">
-                      <h3 className="text-[16px] md:text-[17px] font-bold text-primary leading-snug">
-                        {club.name}
-                      </h3>
-                      <span className="inline-block mt-1 rounded-md bg-primary/5 px-2 py-0.5 text-[11px] font-bold tracking-wider text-primary">
-                        {club.abbreviation}
-                      </span>
-                    </div>
+            {clubs.map((club) => {
+              const cardClassName = `group flex flex-col bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg transition-shadow overflow-hidden ${
+                club.href ? 'cursor-pointer' : ''
+              }`;
+              const cardContent = (
+                <>
+                  <div className="relative aspect-[16/10] bg-gray-100 overflow-hidden">
+                    <Image
+                      src={club.imageUrl}
+                      alt={club.name}
+                      fill
+                      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
                   </div>
 
-                  <p className="text-[14px] leading-[1.7] text-gray-700 mt-1">
-                    {club.description}
-                  </p>
-                </div>
-              </article>
-            ))}
+                  <div className="p-5 md:p-6 flex flex-col gap-3 flex-1">
+                    <div className="flex items-start gap-2">
+                      <Users size={18} className="shrink-0 mt-1 text-accent" />
+                      <div className="flex-1">
+                        <h3 className="text-[16px] md:text-[17px] font-bold text-primary leading-snug">
+                          {club.name}
+                        </h3>
+                        <span className="inline-block mt-1 rounded-md bg-primary/5 px-2 py-0.5 text-[11px] font-bold tracking-wider text-primary">
+                          {club.abbreviation}
+                        </span>
+                      </div>
+                    </div>
+
+                    <p className="text-[14px] leading-[1.7] text-gray-700 mt-1">
+                      {club.description}
+                    </p>
+
+                    {club.href && (
+                      <span className="mt-auto pt-3 inline-flex items-center gap-1.5 text-[13px] font-semibold text-accent">
+                        Visit club page
+                        <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
+                      </span>
+                    )}
+                  </div>
+                </>
+              );
+
+              return club.href ? (
+                <Link key={club.id} href={club.href} className={cardClassName}>
+                  {cardContent}
+                </Link>
+              ) : (
+                <article key={club.id} className={cardClassName}>
+                  {cardContent}
+                </article>
+              );
+            })}
           </div>
         )}
       </Container>

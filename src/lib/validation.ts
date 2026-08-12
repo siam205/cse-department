@@ -706,6 +706,7 @@ export const clubCreateSchema = z.object({
   description:   z.string().min(1),
   imageUrl:      z.string().min(1),
   imagePublicId: optionalNullableString,
+  href:          optionalNullableString,
 });
 
 export const clubUpdateSchema = clubCreateSchema;

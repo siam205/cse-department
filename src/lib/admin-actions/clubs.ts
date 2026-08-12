@@ -38,6 +38,7 @@ function readClubRow(formData: FormData) {
     description:   getStr(formData, 'description'),
     imageUrl:      getStr(formData, 'imageUrl'),
     imagePublicId: emptyToNull(formData.get('imagePublicId')),
+    href:          emptyToNull(formData.get('href')),
   };
 }
 

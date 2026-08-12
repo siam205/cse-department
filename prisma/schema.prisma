@@ -808,6 +808,11 @@ model Club {
   description   String   @db.Text
   imageUrl      String
   imagePublicId String?
+  // href — optional link to the club's own dedicated page (e.g. the
+  // Programming Club's full page at /about/programming-club). When
+  // null, the card on /student-society/club-list renders as plain
+  // (non-clickable) — most clubs don't have a page of their own yet.
+  href          String?
   displayOrder  Int
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
