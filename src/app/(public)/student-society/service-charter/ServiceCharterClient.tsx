@@ -87,8 +87,8 @@ export default function ServiceCharterClient({ introBody, noteBody, items, pdfDo
         </p>
       )}
 
-      <div className="max-w-3xl mx-auto bg-white rounded-xl border border-gray-100 shadow-sm p-5 md:p-6 flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-3 min-w-0">
+      <div className="max-w-3xl mx-auto bg-white rounded-xl border border-gray-100 shadow-sm p-5 md:p-6 flex flex-nowrap items-center justify-between gap-4">
+        <div className="flex items-center gap-3 min-w-0 flex-1">
           <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary to-accent text-white flex items-center justify-center shrink-0 shadow-md">
             <FileText size={20} />
           </div>
