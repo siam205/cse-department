@@ -32,7 +32,7 @@ export default function PageShell({
   subtitle,
   overline,
   children,
-  image = '/assets/site-school-1024x576.webp',
+  image = '/assets/admission-hero.webp',
   imagePosition = 'center',
   contentClassName = 'py-12 md:py-16',
 }: PageShellProps) {

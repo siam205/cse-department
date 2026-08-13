@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import PageShell from '@/components/layout/PageShell';
 import Container from '@/components/ui/Container';
-import { getEventBySlug, getEventSlugs } from '@/lib/identity';
+import { getEventBySlug, getEventSlugs, getPageHero } from '@/lib/identity';
 
 export async function generateStaticParams() {
   const slugs = await getEventSlugs();
@@ -68,7 +68,10 @@ export default async function EventDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const ev = await getEventBySlug(slug);
+  const [ev, hero] = await Promise.all([
+    getEventBySlug(slug),
+    getPageHero('student-society-events-detail'),
+  ]);
   if (!ev) notFound();
 
   const description = coerceParagraphs(ev.description);
@@ -77,7 +80,13 @@ export default async function EventDetailPage({
   const catStyle = CATEGORY_STYLES[ev.category] ?? 'bg-gray-100 text-gray-700';
 
   return (
-    <PageShell title={ev.shortTitle} overline="Events" contentClassName="bg-gray-50 py-12 md:py-20">
+    <PageShell
+      title={ev.shortTitle}
+      overline="Events"
+      image={hero?.heroImageUrl}
+      imagePosition={hero ? `center ${hero.heroImageVerticalPercent}%` : undefined}
+      contentClassName="bg-gray-50 py-12 md:py-20"
+    >
       <Container>
         {/* Back link */}
         <Link

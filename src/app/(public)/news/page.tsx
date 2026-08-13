@@ -12,7 +12,7 @@ export const metadata = {
     'Latest news from the Department of Computer Science & Engineering, Sonargaon University — events, workshops, industrial visits, and academic milestones.',
 };
 
-const FALLBACK_HERO_IMAGE = '/assets/site-school-1024x576.webp';
+const FALLBACK_HERO_IMAGE = '/assets/admission-hero.webp';
 const FALLBACK_HERO_TITLE = 'Latest News';
 const FALLBACK_HERO_OVERLINE = 'News';
 const FALLBACK_INTRO =
