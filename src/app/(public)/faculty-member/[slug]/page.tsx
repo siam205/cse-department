@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import { Mail, Phone, IdCard, Building2, MapPin, Plus } from 'lucide-react';
+import { Mail, IdCard, Building2, MapPin, Plus } from 'lucide-react';
 import type { Faculty } from '@prisma/client';
 import PageShell from '@/components/layout/PageShell';
 import Container from '@/components/ui/Container';
@@ -309,17 +309,6 @@ export default async function FacultyDetailPage({
                     className="text-primary hover:text-accent break-all transition-colors"
                   >
                     {member.email}
-                  </a>
-                </ContactRow>
-              )}
-
-              {member.phone && (
-                <ContactRow label="Phone" Icon={Phone}>
-                  <a
-                    href={`tel:${member.phone}`}
-                    className="text-primary hover:text-accent transition-colors"
-                  >
-                    {member.phone}
                   </a>
                 </ContactRow>
               )}

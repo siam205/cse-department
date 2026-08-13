@@ -146,16 +146,10 @@ export default function FacultyForm({ initial, currentDean, currentHead }: Props
       </Card>
 
       <Card title="Contact">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <TextField
-            label="Email" name="email" type="email"
-            defaultValue={initial?.email ?? ''}
-          />
-          <TextField
-            label="Phone" name="phone"
-            defaultValue={initial?.phone ?? ''}
-          />
-        </div>
+        <TextField
+          label="Email" name="email" type="email"
+          defaultValue={initial?.email ?? ''}
+        />
         <TextField
           label="SU ID" name="suId"
           defaultValue={initial?.suId ?? ''}

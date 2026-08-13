@@ -144,7 +144,7 @@ export default function ProspectusClient({ items }: { items: ProspectusItem[] })
               )}
 
               {/* Download card */}
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+              <div className="mx-auto max-w-[640px] flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="w-11 h-11 rounded-lg bg-gradient-to-br from-primary to-accent text-white flex items-center justify-center shrink-0 shadow-md">
                     <BookOpen size={20} />

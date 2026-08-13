@@ -45,7 +45,6 @@ export const PUT = withErrorHandling(async (request, context: RouteContext) => {
   if (data.photoUrl       !== undefined) update.photoUrl       = data.photoUrl ?? null;
   if (data.photoPublicId  !== undefined) update.photoPublicId  = data.photoPublicId ?? null;
   if (data.email          !== undefined) update.email          = data.email && data.email !== '' ? data.email : null;
-  if (data.phone          !== undefined) update.phone          = data.phone ?? null;
   if (data.suId           !== undefined) update.suId           = data.suId ?? null;
   if (data.officeAddress  !== undefined) update.officeAddress  = data.officeAddress ?? null;
   if (data.personalInfo          !== undefined) update.personalInfo          = asJson(data.personalInfo);

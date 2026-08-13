@@ -52,14 +52,8 @@ function zodErr(
     .join('; ');
 }
 
-function normalizePhone(value: string | null): string | null {
-  if (!value) return null;
-  return /^1\d{9}$/.test(value) ? `0${value}` : value;
-}
-
 function extractFromFormData(formData: FormData) {
   const email = emptyToNull(formData.get('email'));
-  const phone = emptyToNull(formData.get('phone'));
   return {
     slug:           getStr(formData, 'slug'),
     name:           getStr(formData, 'name'),
@@ -70,7 +64,6 @@ function extractFromFormData(formData: FormData) {
     photoUrl:       emptyToNull(formData.get('photoUrl')),
     photoPublicId:  emptyToNull(formData.get('photoPublicId')),
     email,
-    phone:          normalizePhone(phone),
     suId:           emptyToNull(formData.get('suId')),
     officeAddress:  emptyToNull(formData.get('officeAddress')),
     personalInfo:          parseJsonOrNull(formData.get('personalInfo')),
@@ -117,7 +110,6 @@ function buildFacultyData(parsed: ReturnType<typeof facultyCreateSchema.parse>) 
     photoUrl:       parsed.photoUrl ?? null,
     photoPublicId:  parsed.photoPublicId ?? null,
     email:          parsed.email && parsed.email !== '' ? parsed.email : null,
-    phone:          parsed.phone ?? null,
     suId:           parsed.suId ?? null,
     officeAddress:  parsed.officeAddress ?? null,
     personalInfo:          asJson(parsed.personalInfo),

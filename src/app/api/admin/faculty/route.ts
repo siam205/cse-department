@@ -75,7 +75,6 @@ export const POST = withErrorHandling(async (request) => {
           photoUrl:       parsed.photoUrl ?? null,
           photoPublicId:  parsed.photoPublicId ?? null,
           email:          parsed.email && parsed.email !== '' ? parsed.email : null,
-          phone:          parsed.phone ?? null,
           suId:           parsed.suId ?? null,
           officeAddress:  parsed.officeAddress ?? null,
           personalInfo:          asJson(parsed.personalInfo),
