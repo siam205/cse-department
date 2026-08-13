@@ -135,7 +135,7 @@ export default function ProspectusClient({ items }: { items: ProspectusItem[] })
                 <iframe
                   src={`${p.pdfView}#toolbar=0&navpanes=0&scrollbar=0`}
                   title={`${p.title} preview`}
-                  className="w-full h-[70vh] md:h-[80vh] rounded-2xl border border-gray-200 shadow-sm bg-gray-50 mb-4"
+                  className="mx-auto block w-full max-w-[640px] aspect-[210/297] rounded-2xl border border-gray-200 shadow-sm bg-gray-50 mb-4"
                 />
               ) : (
                 <div className="rounded-2xl border border-dashed border-gray-300 bg-white p-12 text-center text-gray-400 text-sm mb-4">
