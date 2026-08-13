@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { ChevronRight, ChevronDown } from 'lucide-react';
+import { ChevronRight, ChevronDown, MapPin, Users, Cpu, AppWindow, BookOpen } from 'lucide-react';
 import Container from '@/components/ui/Container';
 
 // Public Lab shape — matches the select() in getLabs() (identity.ts).
@@ -12,9 +12,20 @@ type LabRow = {
   name: string;
   tagline: string;
   description: string;
+  roomNo: string | null;
+  capacity: number | null;
+  majorEquipment: string | null;
+  software: string | null;
+  coursesSupported: string | null;
   heroImageUrl: string | null;
   gallery: string[];
 };
+
+// Newline-separated plain text → clean list, dropping blank lines.
+function toLines(v: string | null): string[] {
+  if (!v) return [];
+  return v.split('\n').map((s) => s.trim()).filter(Boolean);
+}
 
 type Props = {
   labs: readonly LabRow[];
@@ -29,6 +40,9 @@ export default function LabFacilityClient({ labs }: Props) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const active = labs.find((l) => l.slug === activeSlug) ?? labs[0] ?? null;
+  const majorEquipment = active ? toLines(active.majorEquipment) : [];
+  const software = active ? toLines(active.software) : [];
+  const coursesSupported = active ? toLines(active.coursesSupported) : [];
 
   // On mount and on hashchange, sync the selected lab with the URL hash
   // so /about/lab-facility#fluid-mechanics-lab opens the right card.
@@ -176,6 +190,78 @@ export default function LabFacilityClient({ labs }: Props) {
           <p className="text-[15px] md:text-base text-gray-700 leading-[1.85] mb-8">
             {active.description}
           </p>
+
+          {(active.roomNo || active.capacity) && (
+            <div className="flex flex-wrap gap-x-6 gap-y-2 mb-8 text-[13.5px]">
+              {active.roomNo && (
+                <span className="inline-flex items-center gap-1.5 text-gray-600">
+                  <MapPin size={14} className="text-accent" />
+                  Room {active.roomNo}
+                </span>
+              )}
+              {active.capacity != null && (
+                <span className="inline-flex items-center gap-1.5 text-gray-600">
+                  <Users size={14} className="text-accent" />
+                  Capacity: {active.capacity} students
+                </span>
+              )}
+            </div>
+          )}
+
+          {(majorEquipment.length > 0 || software.length > 0 || coursesSupported.length > 0) && (
+            <div className="grid sm:grid-cols-2 gap-6 mb-8 bg-gray-50 rounded-xl p-5 md:p-6">
+              {majorEquipment.length > 0 && (
+                <div>
+                  <h3 className="inline-flex items-center gap-1.5 font-display text-sm font-bold text-primary mb-3">
+                    <Cpu size={15} className="text-accent" />
+                    Major Equipment
+                  </h3>
+                  <ul className="space-y-1.5">
+                    {majorEquipment.map((item) => (
+                      <li key={item} className="flex items-start gap-2 text-[13.5px] text-gray-700 leading-relaxed">
+                        <span className="mt-2 w-1 h-1 rounded-full bg-accent shrink-0" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {software.length > 0 && (
+                <div>
+                  <h3 className="inline-flex items-center gap-1.5 font-display text-sm font-bold text-primary mb-3">
+                    <AppWindow size={15} className="text-accent" />
+                    Software
+                  </h3>
+                  <ul className="space-y-1.5">
+                    {software.map((item) => (
+                      <li key={item} className="flex items-start gap-2 text-[13.5px] text-gray-700 leading-relaxed">
+                        <span className="mt-2 w-1 h-1 rounded-full bg-accent shrink-0" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {coursesSupported.length > 0 && (
+                <div className="sm:col-span-2">
+                  <h3 className="inline-flex items-center gap-1.5 font-display text-sm font-bold text-primary mb-3">
+                    <BookOpen size={15} className="text-accent" />
+                    Courses Supported
+                  </h3>
+                  <ul className="space-y-1.5">
+                    {coursesSupported.map((item) => (
+                      <li key={item} className="flex items-start gap-2 text-[13.5px] text-gray-700 leading-relaxed">
+                        <span className="mt-2 w-1 h-1 rounded-full bg-accent shrink-0" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
 
           {active.heroImageUrl && (
             <div className="rounded-xl overflow-hidden border border-gray-100 mb-8">

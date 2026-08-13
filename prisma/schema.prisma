@@ -566,6 +566,17 @@ model Lab {
   name              String
   tagline           String   @db.Text
   description       String   @db.Text
+  // Facts sheet — sourced from the department's Laboratory Information
+  // register (Room, Capacity, Major Equipment, Software, Courses).
+  // majorEquipment / software / coursesSupported are newline-separated
+  // plain text (one item per line), rendered as bullet lists — same
+  // convention as ServiceCharterItem.process, avoiding a Json[] editor
+  // for what is always a flat list.
+  roomNo            String?
+  capacity          Int?
+  majorEquipment    String?  @db.Text
+  software          String?  @db.Text
+  coursesSupported  String?  @db.Text
   heroImageUrl      String?
   heroImagePublicId String?
   // Gallery — paired arrays. gallery[i] is the URL, galleryPublicIds[i]

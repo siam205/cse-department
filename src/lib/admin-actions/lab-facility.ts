@@ -107,11 +107,17 @@ function parseStringArray(fd: FormData, key: string): string[] {
 }
 
 function readLabRow(formData: FormData) {
+  const capacityRaw = emptyToNull(formData.get('capacity'));
   return {
     slug:              getStr(formData, 'slug'),
     name:              getStr(formData, 'name'),
     tagline:           getStr(formData, 'tagline'),
     description:       getStr(formData, 'description'),
+    roomNo:            emptyToNull(formData.get('roomNo')),
+    capacity:          capacityRaw,
+    majorEquipment:    emptyToNull(formData.get('majorEquipment')),
+    software:          emptyToNull(formData.get('software')),
+    coursesSupported:  emptyToNull(formData.get('coursesSupported')),
     heroImageUrl:      emptyToNull(formData.get('heroImageUrl')),
     heroImagePublicId: emptyToNull(formData.get('heroImagePublicId')),
     gallery:           parseStringArray(formData, 'gallery'),
@@ -150,6 +156,11 @@ export async function createLabAction(
         name:              parsed.data.name,
         tagline:           parsed.data.tagline,
         description:       parsed.data.description,
+        roomNo:            parsed.data.roomNo ?? null,
+        capacity:          parsed.data.capacity ?? null,
+        majorEquipment:    parsed.data.majorEquipment ?? null,
+        software:          parsed.data.software ?? null,
+        coursesSupported:  parsed.data.coursesSupported ?? null,
         heroImageUrl:      parsed.data.heroImageUrl ?? null,
         heroImagePublicId: parsed.data.heroImagePublicId ?? null,
         gallery:           parsed.data.gallery,
