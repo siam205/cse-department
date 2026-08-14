@@ -129,7 +129,7 @@ export default function JoinMechaClubButton({ label }: { label: string }) {
                 onClick={close}
                 disabled={pending}
                 aria-label="Close dialog"
-                className="p-1.5 -mr-1 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-colors disabled:opacity-50"
+                className="flex h-10 w-10 shrink-0 items-center justify-center -mr-1 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-colors disabled:opacity-50"
               >
                 <XIcon size={18} />
               </button>

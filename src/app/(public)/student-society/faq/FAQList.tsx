@@ -133,7 +133,7 @@ export default function FAQList({ faqs }: Props) {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="mt-10 flex items-center justify-center gap-2">
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-2">
           <button
             onClick={() => handlePageChange(page - 1)}
             disabled={page === 1}

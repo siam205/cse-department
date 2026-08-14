@@ -302,14 +302,24 @@ export default async function FacultyDetailPage({
                 </span>
               </ContactRow>
 
-              {member.email && (
+              {(member.email || member.emailAlt) && (
                 <ContactRow label="Email" Icon={Mail}>
-                  <a
-                    href={`mailto:${member.email}`}
-                    className="text-primary hover:text-accent break-all transition-colors"
-                  >
-                    {member.email}
-                  </a>
+                  {/* Some faculty list two addresses (institutional +
+                      personal). Each gets its own mailto — a single
+                      combined string produces a broken link. */}
+                  <span className="flex flex-col gap-0.5">
+                    {[member.email, member.emailAlt]
+                      .filter((e): e is string => !!e)
+                      .map((addr) => (
+                        <a
+                          key={addr}
+                          href={`mailto:${addr}`}
+                          className="text-primary hover:text-accent break-all transition-colors"
+                        >
+                          {addr}
+                        </a>
+                      ))}
+                  </span>
                 </ContactRow>
               )}
 

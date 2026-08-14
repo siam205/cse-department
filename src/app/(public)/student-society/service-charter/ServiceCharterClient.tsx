@@ -51,15 +51,12 @@ export default function ServiceCharterClient({ introBody, noteBody, items, pdfDo
         </div>
       ) : (
         <div className="grid gap-5 md:gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {items.map((item, i) => (
+          {items.map((item) => (
             <article
               key={item.id}
               className="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow p-5 md:p-6 flex flex-col"
             >
-              <div className="flex items-start gap-3 mb-3">
-                <div className="w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center font-display font-bold text-[13px] shrink-0">
-                  {i + 1}
-                </div>
+              <div className="mb-3">
                 <h3 className="font-display text-[15px] md:text-base font-bold text-primary leading-snug">
                   {item.service}
                 </h3>
@@ -87,7 +84,12 @@ export default function ServiceCharterClient({ introBody, noteBody, items, pdfDo
         </p>
       )}
 
-      <div className="max-w-3xl mx-auto bg-white rounded-xl border border-gray-100 shadow-sm p-5 md:p-6 flex flex-nowrap items-center justify-between gap-4">
+      {/* Stacks on phones, single row from sm up. Not `flex-wrap`:
+          that let the button drop to its own line on desktop too. Not
+          plain `flex-nowrap` either — the button is shrink-0 +
+          whitespace-nowrap, so on a 360px screen it would squeeze the
+          heading down to a few characters per line. */}
+      <div className="max-w-3xl mx-auto bg-white rounded-xl border border-gray-100 shadow-sm p-5 md:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3 min-w-0 flex-1">
           <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary to-accent text-white flex items-center justify-center shrink-0 shadow-md">
             <FileText size={20} />
@@ -95,7 +97,7 @@ export default function ServiceCharterClient({ introBody, noteBody, items, pdfDo
           <div className="min-w-0">
             <h3 className="font-display text-[15px] font-bold text-primary">Service Charter as a PDF</h3>
             <p className="text-[13px] text-gray-500">
-              All {items.length} services, their steps and the person responsible for each — in one document you can keep or print.
+              Every service, its steps and the person responsible for each — in one document you can keep or print.
             </p>
           </div>
         </div>
@@ -105,13 +107,13 @@ export default function ServiceCharterClient({ introBody, noteBody, items, pdfDo
             href={pdfDownload}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-white text-sm font-semibold rounded-xl transition-colors shrink-0 whitespace-nowrap"
+            className="inline-flex w-full sm:w-auto items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-white text-sm font-semibold rounded-xl transition-colors shrink-0 whitespace-nowrap"
           >
             <Download size={16} />
             Download PDF
           </a>
         ) : (
-          <span className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gray-100 text-gray-400 text-sm font-semibold rounded-xl cursor-not-allowed shrink-0 whitespace-nowrap">
+          <span className="inline-flex w-full sm:w-auto items-center justify-center gap-2 px-6 py-3 bg-gray-100 text-gray-400 text-sm font-semibold rounded-xl cursor-not-allowed shrink-0 whitespace-nowrap">
             PDF coming soon
           </span>
         )}

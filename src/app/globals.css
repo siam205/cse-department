@@ -79,7 +79,7 @@ html {
     @apply text-2xl md:text-3xl font-display font-bold text-primary mt-10 mb-4 first:mt-0;
   }
   .legal-body p {
-    @apply text-[15px] md:text-[16px] leading-[1.85] text-gray-700 mb-4;
+    @apply text-[15px] md:text-[16px] leading-[1.85] text-gray-700 mb-4 break-words;
   }
   .legal-body strong {
     @apply font-semibold text-gray-900;
@@ -87,8 +87,12 @@ html {
   .legal-body em {
     @apply italic;
   }
+  /* break-all on links: legal copy is admin-authored and is exactly
+     where bare URLs and email addresses appear. Without it a long
+     unbroken href clips off the right edge on a phone, since
+     html{overflow-x:clip} means there is no scrollbar to reach it. */
   .legal-body a {
-    @apply text-accent underline underline-offset-2 hover:text-primary transition-colors;
+    @apply text-accent underline underline-offset-2 hover:text-primary transition-colors break-all;
   }
   .legal-body ul {
     @apply list-disc pl-6 mb-4 space-y-1.5;

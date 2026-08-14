@@ -111,7 +111,7 @@ export default function NoticesClient({ notices }: { notices: readonly NoticeCar
                   </span>
                 </div>
 
-                <div className="bg-gray-50/70 rounded-lg p-5 mb-5 text-[15px] text-gray-700 leading-[1.85]">
+                <div className="bg-gray-50/70 rounded-lg p-5 mb-5 text-[15px] text-gray-700 leading-[1.85] break-words">
                   {n.description}
                 </div>
 

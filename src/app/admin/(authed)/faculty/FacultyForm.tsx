@@ -151,6 +151,10 @@ export default function FacultyForm({ initial, currentDean, currentHead }: Props
           defaultValue={initial?.email ?? ''}
         />
         <TextField
+          label="Alternate email (optional)" name="emailAlt" type="email"
+          defaultValue={initial?.emailAlt ?? ''}
+        />
+        <TextField
           label="SU ID" name="suId"
           defaultValue={initial?.suId ?? ''}
           placeholder="e.g. SU1603141114"

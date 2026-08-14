@@ -16,6 +16,23 @@ export const metadata = {
 // Phase 20 — quickContactCards.iconName resolves via the shared
 // DynamicLucideIcon (any Lucide name; silent HelpCircle fallback).
 
+// Column counts must be written as complete literal class names.
+// Tailwind scans source text for classes, so an interpolated
+// `lg:grid-cols-${n}` is never generated and the rule silently
+// never applies — which is what these maps replaced.
+const LG_COLS: Record<number, string> = {
+  1: 'lg:grid-cols-1',
+  2: 'lg:grid-cols-2',
+  3: 'lg:grid-cols-3',
+  4: 'lg:grid-cols-4',
+};
+
+const MD_COLS: Record<number, string> = {
+  1: 'md:grid-cols-1',
+  2: 'md:grid-cols-2',
+  3: 'md:grid-cols-3',
+};
+
 type QuickContactCard = {
   iconName: string;
   title: string;
@@ -96,7 +113,7 @@ export default async function ContactPage() {
               <div className="mt-3 mx-auto h-1 w-16 bg-accent rounded-full" />
             </div>
 
-            <div className={`mx-auto max-w-5xl grid gap-5 sm:grid-cols-2 ${cards.length >= 4 ? 'lg:grid-cols-4' : `lg:grid-cols-${cards.length}`}`}>
+            <div className={`mx-auto max-w-5xl grid gap-5 sm:grid-cols-2 ${LG_COLS[Math.min(cards.length, 4)] ?? 'lg:grid-cols-4'}`}>
               {cards.map((c, i) => {
                 return (
                   <div
@@ -179,7 +196,7 @@ export default async function ContactPage() {
               <div className="mt-3 mx-auto h-1 w-16 bg-accent rounded-full" />
             </div>
 
-            <div className={`mx-auto max-w-6xl grid gap-6 ${campuses.length >= 3 ? 'md:grid-cols-3' : `md:grid-cols-${campuses.length}`}`}>
+            <div className={`mx-auto max-w-6xl grid gap-6 ${MD_COLS[Math.min(campuses.length, 3)] ?? 'md:grid-cols-3'}`}>
               {campuses.map((c) => (
                 <article
                   key={c.id}

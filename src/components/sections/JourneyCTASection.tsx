@@ -47,7 +47,10 @@ export default function JourneyCTASection({
           that overrides the inline style, breaking the admin's
           vertical-position slider. Single-image render path so the
           optimization trade-off is negligible. */}
-      <div className="relative h-[420px] md:h-[480px] overflow-hidden">
+      {/* min-h, not h: `heading` and `body` are admin-editable, and with
+          a fixed height + overflow-hidden any longer copy silently
+          clipped the CTA buttons off the bottom on narrow screens. */}
+      <div className="relative min-h-[420px] md:min-h-[480px] overflow-hidden flex items-center">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={heroImageUrl}
@@ -60,7 +63,7 @@ export default function JourneyCTASection({
         {/* Bottom fade for smooth transition to footer */}
         <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-primary/90 to-transparent" />
 
-        <Container className="relative z-10 h-full flex items-center justify-start">
+        <Container className="relative z-10 w-full py-14 md:py-16 flex items-center justify-start">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -68,7 +71,7 @@ export default function JourneyCTASection({
             transition={{ duration: 0.6, ease: 'easeOut' }}
             className="max-w-xl text-white text-left"
           >
-            <h2 className="font-display text-4xl md:text-5xl font-bold mb-5 leading-tight">
+            <h2 className="font-display text-3xl md:text-5xl font-bold mb-5 leading-tight">
               {heading}
             </h2>
             <p

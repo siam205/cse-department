@@ -13,6 +13,26 @@ const slugToTitle = (slug: string) =>
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
     .join(' ');
 
+// Grouping prefixes in the URL that have no page of their own —
+// /about, /admission, /student-society and /programs all 404. They
+// still belong in the trail for orientation, but as plain text: a
+// breadcrumb whose links dead-end is worse than one without them.
+const NON_PAGE_SECTIONS = new Set([
+  'about',
+  'admission',
+  'student-society',
+  'programs',
+]);
+
+// Only needed where slugToTitle gets it wrong; everything else
+// ('news' → News, 'events' → Events) derives correctly.
+const SEGMENT_LABELS: Record<string, string> = {
+  'faculty-member': 'Faculty',
+  'faq': 'FAQ',
+};
+
+const labelFor = (seg: string) => SEGMENT_LABELS[seg] ?? slugToTitle(seg);
+
 interface PageShellProps {
   title: string;
   subtitle?: string;
@@ -118,7 +138,7 @@ export default function PageShell({
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.9 }}
-              className="flex items-center justify-center gap-2 text-white/90 text-xs md:text-[13px] font-medium tracking-wide"
+              className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-white/90 text-xs md:text-[13px] font-medium tracking-wide"
             >
               <a
                 href="/"
@@ -129,17 +149,25 @@ export default function PageShell({
               {segments.map((seg, idx) => {
                 const href = '/' + segments.slice(0, idx + 1).join('/');
                 const isLast = idx === segments.length - 1;
+                // The final crumb uses the page's real title rather than
+                // the slug — a detail route like
+                // /student-society/events/su-cse-fest-2025 would
+                // otherwise read "Su Cse Fest 2025".
+                const label = isLast ? title : labelFor(seg);
+                const isLinkable = !isLast && !NON_PAGE_SECTIONS.has(seg);
                 return (
                   <span key={href} className="inline-flex items-center gap-2">
-                    <ChevronRight size={13} className="opacity-50" />
+                    <ChevronRight size={13} className="opacity-50 shrink-0" />
                     {isLast ? (
                       <span className="text-button-yellow font-semibold">
-                        {slugToTitle(seg)}
+                        {label}
                       </span>
-                    ) : (
+                    ) : isLinkable ? (
                       <a href={href} className="hover:text-button-yellow transition-colors">
-                        {slugToTitle(seg)}
+                        {label}
                       </a>
+                    ) : (
+                      <span className="text-white/70">{label}</span>
                     )}
                   </span>
                 );

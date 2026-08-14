@@ -71,8 +71,12 @@ export default async function NewsDetailPage({
 
   return (
     <main className="bg-gray-50">
-      {/* Top spacer for fixed navbar (top bar 40px + middle ~80px + bottom 56px ≈ 176px) */}
-      <div className="pt-[180px] md:pt-[200px] pb-12 md:pb-20">
+      {/* Top spacer for the fixed navbar, matched to what actually
+          renders at each breakpoint: middle bar only (~80px) on mobile,
+          + top bar (md:flex, ~40px), + bottom nav (lg:block, ~56px).
+          A flat pt-[180px] left ~80px of dead space above the title on
+          phones, where two of those three bars are hidden. */}
+      <div className="pt-[100px] md:pt-[140px] lg:pt-[200px] pb-12 md:pb-20">
         <Container>
           {/* Breadcrumb */}
           <nav

@@ -120,7 +120,12 @@ export default function ServicesSection() {
                       <h3 className="text-white text-lg md:text-xl font-display font-bold mb-2 transition-colors group-hover:text-accent">
                         {service.name}
                       </h3>
-                      <p className="text-white/70 text-sm mb-4 md:mb-6 leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      {/* Visible by default; the hover-reveal is scoped to
+                          lg+ only. Touch devices have no hover state, so
+                          a bare `opacity-0 group-hover:opacity-100` left
+                          these descriptions permanently invisible on
+                          phones and tablets. */}
+                      <p className="text-white/70 text-sm mb-4 md:mb-6 leading-relaxed opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300">
                         {service.description}
                       </p>
                       <div className="flex justify-between items-center">

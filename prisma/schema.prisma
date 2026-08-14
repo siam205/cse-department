@@ -232,7 +232,12 @@ model Faculty {
   photoPublicId   String?
 
   // Contact (all optional)
+  // email is the primary/institutional address. emailAlt holds the
+  // personal one for the faculty who list two in the department's
+  // roster — the source spreadsheet packs both into a single cell,
+  // which previously meant the second was simply dropped on import.
   email           String?
+  emailAlt        String?
   phone           String?
   suId            String?
   // Per-faculty office address. Nullable: when null the public

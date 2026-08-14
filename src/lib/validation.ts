@@ -215,6 +215,7 @@ export const facultyCreateSchema = z.object({
   photoPublicId:  optionalNullableString,
 
   email:          z.string().email().nullable().optional().or(z.literal('')),
+  emailAlt:       z.string().email().nullable().optional().or(z.literal('')),
   suId:           z.string().nullable().optional(),
   // Optional per-faculty office address override; null/empty →
   // public page falls back to UniversityIdentity.address.

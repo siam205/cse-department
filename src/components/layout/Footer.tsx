@@ -144,7 +144,10 @@ export default function Footer({
               ))}
             </ul>
 
-            <div className="flex gap-3 pt-1">
+            {/* flex-wrap: 7 seeded socials at 36px + gaps already total
+                ~324px against 328px usable at 360px, so an eighth (the
+                currently-unset WhatsApp link) would squash them all. */}
+            <div className="flex flex-wrap gap-3 pt-1">
               {socialList.map(({ name, Icon, href }) =>
                 href ? (
                   <a

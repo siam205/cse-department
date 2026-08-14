@@ -54,6 +54,7 @@ function zodErr(
 
 function extractFromFormData(formData: FormData) {
   const email = emptyToNull(formData.get('email'));
+  const emailAlt = emptyToNull(formData.get('emailAlt'));
   return {
     slug:           getStr(formData, 'slug'),
     name:           getStr(formData, 'name'),
@@ -64,6 +65,7 @@ function extractFromFormData(formData: FormData) {
     photoUrl:       emptyToNull(formData.get('photoUrl')),
     photoPublicId:  emptyToNull(formData.get('photoPublicId')),
     email,
+    emailAlt,
     suId:           emptyToNull(formData.get('suId')),
     officeAddress:  emptyToNull(formData.get('officeAddress')),
     personalInfo:          parseJsonOrNull(formData.get('personalInfo')),
@@ -110,6 +112,7 @@ function buildFacultyData(parsed: ReturnType<typeof facultyCreateSchema.parse>) 
     photoUrl:       parsed.photoUrl ?? null,
     photoPublicId:  parsed.photoPublicId ?? null,
     email:          parsed.email && parsed.email !== '' ? parsed.email : null,
+    emailAlt:       parsed.emailAlt && parsed.emailAlt !== '' ? parsed.emailAlt : null,
     suId:           parsed.suId ?? null,
     officeAddress:  parsed.officeAddress ?? null,
     personalInfo:          asJson(parsed.personalInfo),
