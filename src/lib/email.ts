@@ -71,6 +71,107 @@ export async function sendContactNotification(
   }
 }
 
+// ─────────────────────────────────────────────────────────────────
+//  Homepage admission-lead popup notification.
+//  Same graceful-degradation contract as sendContactNotification:
+//  a missing API key or unconfigured recipient is a SKIP, not a
+//  failure — the lead is already persisted and the visitor's
+//  request still succeeds.
+// ─────────────────────────────────────────────────────────────────
+
+interface AdmissionLeadEmailPayload {
+  to: string | null;
+  name: string;
+  phone: string;
+  programmeName: string;
+  submittedAt: Date;
+  ipAddress?: string | null;
+}
+
+export async function sendAdmissionLeadNotification(
+  payload: AdmissionLeadEmailPayload,
+): Promise<EmailDispatchResult> {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    return { status: 'skipped', reason: 'RESEND_API_KEY not configured' };
+  }
+  if (!payload.to || payload.to.trim().length === 0) {
+    return {
+      status: 'skipped',
+      reason:
+        'No recipient configured (AdmissionLeadPopupSettings.notifyEmail and UniversityIdentity.contactSubmissionEmail are both null)',
+    };
+  }
+
+  const resend = new Resend(apiKey);
+  try {
+    const result = await resend.emails.send({
+      from: FROM_ADDRESS,
+      to: payload.to,
+      subject: `New admission lead: ${payload.name}`,
+      html: renderAdmissionLeadHtml(payload),
+    });
+    if (result.error) {
+      return {
+        status: 'failed',
+        error: result.error.message ?? 'Unknown Resend error',
+      };
+    }
+    return { status: 'sent' };
+  } catch (e) {
+    return {
+      status: 'failed',
+      error: e instanceof Error ? e.message : 'Resend SDK threw',
+    };
+  }
+}
+
+function renderAdmissionLeadHtml(p: AdmissionLeadEmailPayload): string {
+  const esc = (s: string) =>
+    s
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+
+  const row = (label: string, value: string) =>
+    `<tr><td style="padding:8px 0;color:#666;font-size:12px;width:120px;vertical-align:top;">${label}</td><td style="padding:8px 0;color:#111;font-size:14px;font-weight:600;">${value}</td></tr>`;
+
+  const meta: string[] = [
+    `<tr><td style="padding:6px 12px;color:#666;font-size:12px;">Submitted</td><td style="padding:6px 12px;color:#222;font-size:13px;">${p.submittedAt.toISOString()}</td></tr>`,
+  ];
+  if (p.ipAddress) {
+    meta.push(
+      `<tr><td style="padding:6px 12px;color:#666;font-size:12px;">IP</td><td style="padding:6px 12px;color:#222;font-size:13px;">${esc(p.ipAddress)}</td></tr>`,
+    );
+  }
+
+  // tel: link so the admission team can dial straight from the email
+  // on mobile — this lead type is followed up by phone, not reply.
+  const telHref = p.phone.replace(/[^\d+]/g, '');
+
+  return `<!doctype html>
+<html><body style="margin:0;background:#f6f6f8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <div style="max-width:640px;margin:24px auto;background:#fff;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;">
+    <div style="background:#2B3175;color:#fff;padding:18px 24px;">
+      <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;opacity:0.85;">Sonargaon CSE</div>
+      <div style="font-size:18px;font-weight:700;margin-top:4px;">New admission lead</div>
+    </div>
+    <div style="padding:24px;">
+      <table style="width:100%;border-collapse:collapse;">
+        ${row('Name', esc(p.name))}
+        ${row('Mobile', `<a href="tel:${esc(telHref)}" style="color:#CC1579;text-decoration:none;">${esc(p.phone)}</a>`)}
+        ${row('Programme', esc(p.programmeName))}
+      </table>
+      <table style="margin-top:18px;border-collapse:collapse;">${meta.join('')}</table>
+      <div style="margin-top:20px;font-size:12px;color:#666;border-top:1px solid #eee;padding-top:14px;">
+        Submitted through the homepage admission-guidance popup.
+      </div>
+    </div>
+  </div>
+</body></html>`;
+}
+
 function renderHtml(p: ContactEmailPayload): string {
   const esc = (s: string) =>
     s

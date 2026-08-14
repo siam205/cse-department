@@ -1592,3 +1592,63 @@ model NewsletterSubscriber {
   @@index([status, createdAt])
   @@map("newsletter_subscriber")
 }
+
+// ════════════════════════════════════════════════════════════════
+//  Homepage admission-lead popup
+//    Timed modal on / that collects name + mobile + programme.
+//    Settings singleton drives copy and behaviour; AdmissionLead
+//    is the resulting inbox (mirrors ContactSubmission).
+// ════════════════════════════════════════════════════════════════
+
+model AdmissionLeadPopupSettings {
+  id           String  @id @default("singleton")
+  enabled      Boolean @default(true)
+  // Seconds the visitor must stay on the homepage before the modal
+  // opens. Admin-tunable; 15 is the launch default.
+  delaySeconds Int     @default(15)
+
+  heading              String
+  subheading           String  @db.Text
+  nameLabel            String
+  namePlaceholder      String
+  phoneLabel           String
+  phonePlaceholder     String
+  programmeLabel       String
+  // Text of the empty <option> that sits above the real programmes.
+  programmePlaceholder String
+  buttonLabel          String
+  footnote             String
+  successMessage       String  @db.Text
+
+  // Recipient for the new-lead notification. Null falls back to
+  // UniversityIdentity.contactSubmissionEmail so the admission team
+  // only has to configure an address in one place.
+  notifyEmail  String?
+  updatedAt    DateTime @updatedAt
+
+  @@map("admission_lead_popup_settings")
+}
+
+model AdmissionLead {
+  id            String   @id @default(cuid())
+  name          String
+  phone         String
+  // Snapshot of the programme name, NOT a Program relation. A later
+  // rename or delete must not rewrite or orphan historical leads.
+  programmeName String
+  // status — 'new' | 'read' | 'archived'. Same String-for-forward-
+  // flexibility convention as ContactSubmission.status.
+  status        String   @default("new")
+  // Forensics — same nullable shape as ContactSubmission.
+  ipAddress     String?
+  userAgent     String?  @db.Text
+  submittedAt   DateTime @default(now())
+  // Dispatch metadata, patched in after the send attempt. Null
+  // emailSentAt + populated emailError = skipped or failed.
+  emailSentAt   DateTime?
+  emailError    String?
+
+  @@index([status, submittedAt])
+  @@index([submittedAt])
+  @@map("admission_lead")
+}

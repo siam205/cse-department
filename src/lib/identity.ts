@@ -418,6 +418,22 @@ export const getServiceCharterLanding = cache(async () => {
   return prisma.serviceCharterLanding.findUnique({ where: { id: 'singleton' } });
 });
 
+// Homepage admission-lead popup. Returns null when the row has not
+// been seeded — the popup renders nothing in that case, so an
+// unseeded install degrades to "no popup" rather than crashing.
+export const getAdmissionLeadPopupSettings = cache(async () => {
+  return prisma.admissionLeadPopupSettings.findUnique({ where: { id: 'singleton' } });
+});
+
+// Programme names for the popup's dropdown. Deliberately minimal —
+// the modal only needs labels, not the full Program payload.
+export const getProgramNames = cache(async () => {
+  return prisma.program.findMany({
+    orderBy: { displayOrder: 'asc' },
+    select: { id: true, programName: true },
+  });
+});
+
 export const getServiceCharterItems = cache(async () => {
   return prisma.serviceCharterItem.findMany({ orderBy: { displayOrder: 'asc' } });
 });

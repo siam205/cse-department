@@ -8,6 +8,8 @@ import {
   getNewsHomeTop,
   getEventsHomeTop,
   getNoticesHomeTop,
+  getAdmissionLeadPopupSettings,
+  getProgramNames,
 } from '@/lib/identity';
 
 function sectionSkeleton(minHeight: string) {
@@ -44,8 +46,24 @@ const ServicesSection = dynamic(() => import('@/components/sections/ServicesSect
   loading: sectionSkeleton('min-h-[400px]'),
 });
 
+// Timed lead-capture modal. No skeleton — it renders nothing until
+// its own delay elapses, so there is no layout slot to reserve.
+const AdmissionLeadPopup = dynamic(
+  () => import('@/components/sections/AdmissionLeadPopup'),
+);
+
 export default async function HomePage() {
-  const [dept, programs, researchAreas, labs, newsTop, eventsTop, noticesTop] = await Promise.all([
+  const [
+    dept,
+    programs,
+    researchAreas,
+    labs,
+    newsTop,
+    eventsTop,
+    noticesTop,
+    leadPopup,
+    programNames,
+  ] = await Promise.all([
     getDepartmentIdentity(),
     getProgramsWithCta(),
     getResearchAreas(),
@@ -53,6 +71,8 @@ export default async function HomePage() {
     getNewsHomeTop(),
     getEventsHomeTop(),
     getNoticesHomeTop(),
+    getAdmissionLeadPopupSettings(),
+    getProgramNames(),
   ]);
   return (
     <>
@@ -79,6 +99,11 @@ export default async function HomePage() {
       <EventsSection events={eventsTop} />
       <NewsSection news={newsTop} />
       <ServicesSection />
+      {/* Renders nothing when unseeded or switched off in admin, or
+          when there are no programmes to choose from. */}
+      {leadPopup?.enabled && programNames.length > 0 && (
+        <AdmissionLeadPopup settings={leadPopup} programmes={programNames} />
+      )}
     </>
   );
 }

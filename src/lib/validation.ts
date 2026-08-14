@@ -1258,3 +1258,43 @@ export const journeyCTAContentUpdateSchema = z.object({
   secondaryCtaHref:     z.string().min(1).max(500),
   secondaryCtaExternal: z.boolean().optional().default(false),
 });
+
+// ─────────────────────────────────────────────────────────────────
+//  Homepage admission-lead popup — settings singleton, public
+//    submit, and admin status update.
+//    Public schema mirrors the modal's three visible fields; the
+//    honeypot is rejected in the route handler before this runs.
+// ─────────────────────────────────────────────────────────────────
+
+export const admissionLeadPopupSettingsUpdateSchema = z.object({
+  enabled:              z.coerce.boolean().default(false),
+  // Upper bound is deliberate: a delay longer than ~5 min would
+  // effectively disable the popup while still reading as "on".
+  delaySeconds:         z.coerce.number().int().min(0).max(300).default(15),
+  heading:              z.string().trim().min(1).max(300),
+  subheading:           z.string().trim().min(1).max(1000),
+  nameLabel:            z.string().trim().min(1).max(100),
+  namePlaceholder:      z.string().trim().min(1).max(200),
+  phoneLabel:           z.string().trim().min(1).max(100),
+  phonePlaceholder:     z.string().trim().min(1).max(200),
+  programmeLabel:       z.string().trim().min(1).max(100),
+  programmePlaceholder: z.string().trim().min(1).max(200),
+  buttonLabel:          z.string().trim().min(1).max(100),
+  footnote:             z.string().trim().min(1).max(300),
+  successMessage:       z.string().trim().min(1).max(1000),
+  notifyEmail:          z.union([z.string().trim().email().max(320), z.literal('')])
+                          .optional()
+                          .transform((v) => (v && v.length > 0 ? v : null)),
+});
+
+export const admissionLeadCreateSchema = z.object({
+  name:          z.string().trim().min(1).max(200),
+  // No strict phone regex — same permissive handling as
+  // ContactSubmission.phone. Visitors paste all sorts of formats.
+  phone:         z.string().trim().min(1).max(50),
+  programmeName: z.string().trim().min(1).max(300),
+});
+
+export const admissionLeadStatusUpdateSchema = z.object({
+  status: contactStatusEnum,
+});
