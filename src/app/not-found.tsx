@@ -53,7 +53,7 @@ export default function NotFound() {
           </span>
 
           <h2 className="font-display text-3xl md:text-4xl font-bold text-primary mb-4">
-            Looks like this gear is missing.
+            This route couldn&apos;t be resolved.
           </h2>
 
           <p className="text-base md:text-lg text-gray-600 leading-relaxed mb-10">
