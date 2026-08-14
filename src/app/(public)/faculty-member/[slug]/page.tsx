@@ -341,7 +341,9 @@ export default async function FacultyDetailPage({
                 {personalInfo.map(({ label, value }) => (
                   <div key={label} className="contents">
                     <dt className="font-semibold text-primary">{label}</dt>
-                    <dd className="text-gray-700">{value}</dd>
+                    <dd className="text-gray-700 break-words">
+                      {formatPersonalInfoValue(label, value)}
+                    </dd>
                   </div>
                 ))}
               </dl>
@@ -391,6 +393,36 @@ function AccordionPanel({
       <div className="px-5 py-5 text-[14px] leading-relaxed text-gray-700">{children}</div>
     </details>
   );
+}
+
+// The roster spreadsheet packs a faculty member's two addresses into a
+// single cell, separated by a newline or a bare space — and HTML
+// collapses both to one space, so the pair renders as "a@x.com b@y.com"
+// with nothing between them. Normalise any whitespace-separated run of
+// addresses into a comma-separated list, and link each one.
+const EMAIL_TOKEN = /^[^\s,;]+@[^\s,;]+\.[^\s,;]+$/;
+
+function formatPersonalInfoValue(label: string, value: string) {
+  if (label.trim().toLowerCase() !== 'email') return value;
+
+  const parts = String(value)
+    .split(/[\s,;]+/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  if (parts.length === 0 || !parts.every((p) => EMAIL_TOKEN.test(p))) return value;
+
+  return parts.map((addr, i) => (
+    <span key={addr}>
+      {i > 0 && ', '}
+      <a
+        href={`mailto:${addr}`}
+        className="text-primary hover:text-accent break-all transition-colors"
+      >
+        {addr}
+      </a>
+    </span>
+  ));
 }
 
 function ContactRow({

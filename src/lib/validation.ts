@@ -1235,7 +1235,7 @@ export const campusLocationCreateSchema = z.object({
   tag:     optionalNullableString,
   address: z.string().min(1),
   phone:   optionalNullableString,
-  email:   z.string().email().max(320),
+  email:   z.string().email().max(320).nullable().optional().or(z.literal('')),
   mapsUrl: optionalNullableString,
 });
 

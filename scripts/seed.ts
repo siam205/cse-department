@@ -1771,8 +1771,8 @@ async function seedContactPageContent() {
       title: 'E-mail',
       primaryValue: 'admission.info@su.edu.bd',
       primaryHref: 'mailto:admission.info@su.edu.bd',
-      secondaryValue: 'registrar@su.edu.bd',
-      secondaryHref: 'mailto:registrar@su.edu.bd',
+      secondaryValue: null,
+      secondaryHref: null,
     },
     {
       iconName: 'Globe',
@@ -1829,7 +1829,7 @@ async function seedCampusLocations() {
       tag: 'City Campus-1',
       address: '147/I, Green Road, Panthapath, Dhaka-1215',
       phone: '+880241010352',
-      email: 'registrar@su.edu.bd',
+      email: null,
       displayOrder: 1,
     },
     {

@@ -232,15 +232,17 @@ export default async function ContactPage() {
                       </div>
                     )}
 
-                    <div className="flex items-start gap-3">
-                      <Mail size={16} className="shrink-0 mt-0.5 text-accent" />
-                      <a
-                        href={`mailto:${c.email}`}
-                        className="text-[14px] font-semibold text-primary hover:text-accent transition-colors break-all"
-                      >
-                        {c.email}
-                      </a>
-                    </div>
+                    {c.email && (
+                      <div className="flex items-start gap-3">
+                        <Mail size={16} className="shrink-0 mt-0.5 text-accent" />
+                        <a
+                          href={`mailto:${c.email}`}
+                          className="text-[14px] font-semibold text-primary hover:text-accent transition-colors break-all"
+                        >
+                          {c.email}
+                        </a>
+                      </div>
+                    )}
                   </div>
                 </article>
               ))}
