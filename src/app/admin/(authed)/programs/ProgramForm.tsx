@@ -52,7 +52,7 @@ export default function ProgramForm({ initial }: { initial: Program | null }) {
                      placeholder="e.g. View More" />
           <TextField label="CTA href (optional)" name="ctaHref"
                      defaultValue={initial?.ctaHref ?? ''}
-                      placeholder="/programs/bsc-me" />
+                      placeholder="/programs/bsc-cse" />
         </div>
         <p className="text-xs text-gray-500 -mt-2">
            CTA href: leave blank to fall back to this program&apos;s detail page.

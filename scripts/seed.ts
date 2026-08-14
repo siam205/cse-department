@@ -32,7 +32,7 @@ async function seedDepartmentIdentity() {
     update: {},
     create: {
       id: 'singleton',
-      name: 'Department of Mechanical Engineering',
+      name: 'Department of Computer Science & Engineering',
       shortCode: 'ME',
       facultyName: 'Faculty of Science & Engineering',
       primaryColor: '#2B3175',
@@ -94,34 +94,34 @@ async function seedUniversityIdentity() {
 
 async function seedPrograms() {
   await prisma.program.upsert({
-    where: { degreeCode: 'BSc-ME' },
+    where: { degreeCode: 'BSc-CSE' },
     update: {},
     create: {
-      programName: 'Undergraduate — B.Sc in Mechanical Engineering',
-      degreeCode: 'BSc-ME',
-      duration: '4 Years · 8 Semesters',
+      programName: 'Undergraduate — B.Sc in Computer Science & Engineering',
+      degreeCode: 'BSc-CSE',
+      duration: '4 Years · 12 Semesters',
       description:
-        'Our flagship undergraduate program builds a strong foundation in core mechanical engineering — combining rigorous theory, modern lab practice, and design projects that prepare graduates for industry, research, and global postgraduate study.',
+        'Our flagship undergraduate program builds a strong foundation in computer science and engineering — combining programming, software development, algorithms, databases, networking, artificial intelligence, and hands-on projects that prepare graduates for industry, entrepreneurship, research, and global postgraduate study.',
       displayOrder: 1,
       imageUrl: '/assets/program-undergraduate.webp',
       imagePublicId: null,
       specializations: [
-        'Thermal Engineering',
-        'Design & Manufacturing',
-        'Robotics & Automation',
-        'Energy Systems',
+        'Software Engineering',
+        'AI & Machine Learning',
+        'Cybersecurity',
+        'Web & App Development',
       ],
       cta: 'View More',
-      ctaHref: '/programs/bsc-me',
+      ctaHref: '/programs/bsc-cse',
     },
   });
   console.log('✓ Programs seeded');
 }
 
 async function seedProgramCourseStructure() {
-  const program = await prisma.program.findUnique({ where: { degreeCode: 'BSc-ME' } });
+  const program = await prisma.program.findUnique({ where: { degreeCode: 'BSc-CSE' } });
   if (!program) {
-    console.log('⚠ BSc-ME program not found; skipping course structure seed');
+    console.log('⚠ BSc-CSE program not found; skipping course structure seed');
     return;
   }
   const count = await prisma.programCourseStructure.count({ where: { programId: program.id } });
@@ -474,7 +474,7 @@ async function seedMainNav() {
         { name: 'FAQ',          href: '/student-society/faq',          displayOrder: 5 },
         { name: 'Syllabus',     href: '/student-society/syllabus',     displayOrder: 6 },
         { name: 'Club list',    href: '/student-society/club-list',    displayOrder: 7 },
-        { name: 'Mecha Club',   href: '/about/mecha-club',             displayOrder: 8 },
+        { name: 'SU Programming Club', href: '/about/programming-club', displayOrder: 8 },
       ],
     },
     {
@@ -1238,10 +1238,10 @@ async function seedSyllabus() {
   // empty state when level filter = Postgraduate).
   await prisma.syllabus.create({
     data: {
-      slug:          'bsc-mechanical-engineering',
-      title:         'B.Sc. in Mechanical Engineering',
-      shortTitle:    'B. Sc. in Mechanical Engineering',
-      department:    'Mechanical Engineering',
+      slug:          'bsc-cse',
+      title:         'B.Sc. in Computer Science & Engineering',
+      shortTitle:    'B. Sc. in Computer Science & Engineering',
+      department:    'Computer Science & Engineering',
       level:         'Undergraduate',
       coverUrl:      '/assets/syllabus-me-cover.webp',
       coverPublicId: null,
@@ -1408,10 +1408,10 @@ async function seedAdmissionRequirements() {
 }
 
 async function seedProgramFeeStructures() {
-  // Lookup B.Sc. ME by degreeCode (seeded as 'BSc-ME' by seedPrograms).
-  const program = await prisma.program.findUnique({ where: { degreeCode: 'BSc-ME' } });
+  // Lookup B.Sc. CSE by degreeCode (seeded as 'BSc-CSE' by seedPrograms).
+  const program = await prisma.program.findUnique({ where: { degreeCode: 'BSc-CSE' } });
   if (!program) {
-    console.log('⚠ Program BSc-ME not found — skipping ProgramFeeStructure seed');
+    console.log('⚠ Program BSc-CSE not found — skipping ProgramFeeStructure seed');
     return;
   }
 
@@ -1507,7 +1507,7 @@ async function seedProgramFeeStructures() {
 
   const data = {
     programId:     program.id,
-    introOverline: 'B.Sc. in Mechanical Engineering (ME)',
+    introOverline: 'B.Sc. in Computer Science & Engineering (CSE)',
     introHeading:  'Tuition Fee Structure',
     introBody:
       'Cost per credit and the total program cost vary based on your academic background (SSC + HSC or Diploma) and the shift you choose. Use the breakdown below to find the fees that apply to you.',
@@ -1529,10 +1529,10 @@ async function seedProgramFeeStructures() {
 async function seedProspectusEntries() {
   const rows = [
     {
-      slug: 'bsc-mechanical-engineering',
-      title: 'B.Sc. in Mechanical Engineering',
-      shortTitle: 'B. Sc. in Mechanical Engineering',
-      department: 'Mechanical Engineering',
+      slug: 'bsc-cse',
+      title: 'B.Sc. in Computer Science & Engineering',
+      shortTitle: 'B. Sc. in Computer Science & Engineering',
+      department: 'Computer Science & Engineering',
       level: 'Undergraduate',
       coverUrl: '/assets/prospectus-me-cover.webp',
       coverPublicId: null,

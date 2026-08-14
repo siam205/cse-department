@@ -31,15 +31,15 @@ export default function LabForm({ initial }: { initial: Lab | null }) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <TextField label="Slug (URL-hash deep link)" name="slug" required
                      defaultValue={initial?.slug ?? ''}
-                     placeholder="fluid-mechanics-lab"
+                     placeholder="programming-lab"
                      monospace />
           <TextField label="Name" name="name" required
                      defaultValue={initial?.name ?? ''}
-                     placeholder="Fluid Mechanics Lab" />
+                     placeholder="Programming Lab" />
         </div>
         <TextField label="Tagline" name="tagline" required
                    defaultValue={initial?.tagline ?? ''}
-                   placeholder="Measure flow, pressure, and the behaviour of liquids." />
+                   placeholder="Where coding concepts become practical software solutions." />
         <TextAreaField label="Description" name="description" required rows={5}
                        defaultValue={initial?.description ?? ''} />
       </Card>

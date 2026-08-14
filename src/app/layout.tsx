@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Poppins, Montserrat, Hind_Siliguri } from 'next/font/google';
 import { getDepartmentIdentity } from '@/lib/identity';
+import { SITE_URL } from '@/lib/site-url';
 import './globals.css';
 
 const poppins = Poppins({
@@ -24,7 +25,6 @@ const hindSiliguri = Hind_Siliguri({
   display: 'swap',
 });
 
-const SITE_URL = 'https://mechanical-engineering-olive.vercel.app';
 const SITE_NAME = 'Sonargaon University — CSE Department';
 const SITE_DESCRIPTION =
   'Department of Computer Science & Engineering at Sonargaon University — programs, faculty, research areas, labs, admissions, and campus services.';
@@ -43,16 +43,20 @@ export const metadata: Metadata = {
   // no metadata of its own) falls back to.
   title: SITE_NAME,
   description: SITE_DESCRIPTION,
-  alternates: {
-    canonical: '/',
-  },
+  // NO `alternates.canonical` here on purpose. A canonical set on the
+  // root layout is inherited by every page that doesn't override it,
+  // which pointed all 36 public pages at '/' — telling search engines
+  // each one was a duplicate of the homepage. Pages that want a
+  // canonical set their own; the rest self-canonicalize, which is the
+  // correct default.
+  //
+  // Likewise `openGraph` omits title/description/url: Next.js fills
+  // those from each page's own title/description, so a share of
+  // /research gets the research card instead of the homepage's.
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: '/',
     siteName: SITE_NAME,
-    title: SITE_NAME,
-    description: SITE_DESCRIPTION,
     images: [
       {
         url: OG_IMAGE,
@@ -64,8 +68,6 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: SITE_NAME,
-    description: SITE_DESCRIPTION,
     images: [OG_IMAGE],
   },
 };

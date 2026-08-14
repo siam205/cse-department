@@ -1,16 +1,18 @@
 import Link from 'next/link';
-import { Home, Search, ArrowLeft, Cog } from 'lucide-react';
+import { Home, Search, ArrowLeft, Code2, Terminal } from 'lucide-react';
 import Container from '@/components/ui/Container';
 
 export const metadata = {
-  title: 'Page Not Found',
+  title: 'Page Not Found — Department of Computer Science & Engineering',
   description:
     "The page you're looking for doesn't exist on the Department of Computer Science & Engineering website.",
 };
 
 const quickLinks = [
   { name: 'Department Overview', href: '/about/overview' },
+  { name: 'B.Sc. in CSE', href: '/programs/bsc-cse' },
   { name: 'Faculty Members', href: '/faculty-member' },
+  { name: 'Research Publications', href: '/research' },
   { name: 'Admission', href: '/admission/requirements' },
   { name: 'Notice Board', href: '/student-society/notice-board' },
   { name: 'Events', href: '/student-society/events' },
@@ -23,12 +25,12 @@ export default function NotFound() {
       {/* Decorative background blobs */}
       <div className="absolute -top-32 -left-32 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute -bottom-32 -right-32 w-[28rem] h-[28rem] bg-accent/5 rounded-full blur-3xl pointer-events-none" />
-      <Cog
+      <Code2
         className="absolute top-[12%] right-[8%] text-primary/[0.04] rotate-12 pointer-events-none hidden md:block"
         size={220}
         strokeWidth={1}
       />
-      <Cog
+      <Terminal
         className="absolute bottom-[10%] left-[6%] text-accent/[0.05] -rotate-12 pointer-events-none hidden md:block"
         size={160}
         strokeWidth={1}
