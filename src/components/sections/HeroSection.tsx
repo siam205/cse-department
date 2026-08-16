@@ -156,11 +156,25 @@ export default function HeroSection({
             transition={{ delay: 0.9 }}
             className="flex items-center justify-center gap-2 text-white/90 text-xs md:text-[13px] font-medium tracking-wide"
           >
-            <a href="/" className="hover:text-button-yellow flex items-center gap-1.5 transition-colors">
+            {/* Homepage-only trail, so it points OUT to the university
+                site rather than back to this page: the visitor is
+                already on the department home, making a "/" link a
+                no-op. Same tab on purpose (no target="_blank") — this
+                is upward navigation, not a side trip.
+                Inner pages keep "Home" → "/" via PageShell. */}
+            <a
+              href="https://su.edu.bd/"
+              className="hover:text-button-yellow flex items-center gap-1.5 transition-colors"
+            >
               <Home size={13} /> Home
             </a>
             <ChevronRight size={13} className="opacity-50" />
-            <a href="#" className="hover:text-button-yellow transition-colors">Dept</a>
+            <a
+              href="https://su.edu.bd/academic-area"
+              className="hover:text-button-yellow transition-colors"
+            >
+              Departments
+            </a>
             <ChevronRight size={13} className="opacity-50" />
             <span className="text-button-yellow font-semibold">{breadcrumbLabel}</span>
           </motion.div>

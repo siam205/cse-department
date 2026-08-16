@@ -19,16 +19,35 @@ import type { LucideIcon, LucideProps } from 'lucide-react';
 
 const lib = LucideIcons as unknown as Record<string, LucideIcon | undefined>;
 
+// lucide-react also exports a GENERIC `Icon` factory alongside the real
+// icons. It is not renderable on its own — it maps over a required
+// `iconNode` prop and throws "Cannot read properties of undefined
+// (reading 'map')" without one.
+//
+// That made an empty icon name crash the whole page: `${''}Icon`
+// resolves to exactly that generic export, so the lookup succeeded and
+// never reached the HelpCircle fallback. Adding a blank card in the
+// contact-page admin editor was enough to take the page down. These
+// names must never resolve.
+const NON_ICON_EXPORTS = new Set(['Icon', 'createLucideIcon', 'icons']);
+
+function resolveIcon(name: unknown): LucideIcon | undefined {
+  const key = typeof name === 'string' ? name.trim() : '';
+  if (!key || NON_ICON_EXPORTS.has(key)) return undefined;
+  // With a non-empty key that isn't 'Icon' itself, `${key}Icon` can no
+  // longer collide with the generic export.
+  return lib[key] ?? lib[`${key}Icon`];
+}
+
 export function DynamicLucideIcon({
   name,
   ...rest
 }: { name: string } & LucideProps) {
-  const Icon = lib[name] ?? lib[`${name}Icon`] ?? LucideIcons.HelpCircle;
+  const Icon = resolveIcon(name) ?? LucideIcons.HelpCircle;
   return <Icon {...rest} />;
 }
 
 // Used by IconInputField for live validation feedback.
 export function hasIcon(name: string): boolean {
-  if (!name) return false;
-  return lib[name] != null || lib[`${name}Icon`] != null;
+  return resolveIcon(name) != null;
 }
