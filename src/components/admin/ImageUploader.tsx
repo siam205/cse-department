@@ -47,7 +47,8 @@ type Kind =
   // Phase 17
   | 'legal-hero'
   | 'program-course-pdf'
-  | 'service-charter-pdf';
+  | 'service-charter-pdf'
+  | 'research-paper-pdf';
 
 // Per-kind ideal upload size hint, surfaced under every image field
 // so admins have a target before opening the file picker. null = no
@@ -84,6 +85,7 @@ const RECOMMENDED_SIZE_BY_KIND: Record<Kind, string | null> = {
   'legal-hero':            'Landscape banner · 1920×500',
   'program-course-pdf':    null,
   'service-charter-pdf':   null,
+  'research-paper-pdf':    null,
 };
 
 export type UploadMeta = {

@@ -1,9 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { useActionState, useEffect } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import type { ResearchPaper } from '@prisma/client';
+import ImageUploader from '@/components/admin/ImageUploader';
 import {
   createResearchPaperAction,
   updateResearchPaperAction,
@@ -11,11 +12,17 @@ import {
 } from '@/lib/admin-actions/research-papers';
 
 type State = ActionResult | { ok: null };
+type PdfState = { url: string; publicId: string; fileName: string };
 
 export default function ResearchPaperForm({ initial }: { initial: ResearchPaper | null }) {
   const isEdit = !!initial;
   const action = isEdit ? updateResearchPaperAction.bind(null, initial!.id) : createResearchPaperAction;
   const [state, formAction, pending] = useActionState<State, FormData>(action, { ok: null });
+  const [pdf, setPdf] = useState<PdfState>({
+    url: initial?.pdfUrl ?? '',
+    publicId: initial?.pdfPublicId ?? '',
+    fileName: initial?.pdfFileName ?? '',
+  });
 
   useEffect(() => {
     if (state.ok === true) toast.success(isEdit ? 'Research paper saved' : 'Research paper created');
@@ -45,6 +52,29 @@ export default function ResearchPaperForm({ initial }: { initial: ResearchPaper 
         <p className="text-xs text-gray-500">
           The structured year (left) enables optional year-based sort/filter; the free-form date string (right) keeps human-readable nuance like &quot;January–February 2023&quot;.
         </p>
+      </Card>
+
+      <Card title="Full-text PDF (optional)">
+        <p className="text-xs text-gray-500 -mt-2">
+          Upload the paper itself. When a PDF is attached the public title opens
+          it instead of the link above, so a hosted copy always wins over a DOI.
+          Max 10&nbsp;MB, PDF only. Leave empty to keep using the link.
+        </p>
+        <ImageUploader
+          kind="research-paper-pdf"
+          name="pdf"
+          accept="application/pdf"
+          initialUrl={pdf.url}
+          initialPublicId={pdf.publicId}
+          initialFileType="pdf"
+          initialFileName={pdf.fileName}
+          onChange={(url, publicId, meta) => {
+            setPdf({ url, publicId, fileName: meta?.fileName ?? '' });
+          }}
+        />
+        <input type="hidden" name="pdfUrl" value={pdf.url} />
+        <input type="hidden" name="pdfPublicId" value={pdf.publicId} />
+        <input type="hidden" name="pdfFileName" value={pdf.fileName} />
       </Card>
 
       <Card title="Bibliometrics (optional)">

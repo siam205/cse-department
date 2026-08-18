@@ -75,6 +75,8 @@ const KIND_TO_SUBFOLDER: Record<string, string> = {
   // upload, downloaded via getPrivateDownloadUrl).
   'program-course-pdf':    'programs/course-structure-pdf',
   'service-charter-pdf':   'about/service-charter',
+  // Full-text PDF attached to a research publication.
+  'research-paper-pdf':    'research-papers/pdfs',
 };
 
 function folderFor(kind: string): string {

@@ -293,6 +293,11 @@ export const uploadKindSchema = z.enum([
   // Phase 17
   'legal-hero',
   'service-charter-pdf',
+  // 'program-course-pdf' was missing here while being offered by the
+  // admin uploader, so signing a Course Structure PDF failed validation
+  // and the upload could never start.
+  'program-course-pdf',
+  'research-paper-pdf',
 ]);
 
 export const uploadSignSchema = z.object({
@@ -762,6 +767,9 @@ export const researchPaperCreateSchema = z.object({
   quartile:        optionalNullableString,
   citeScore:       optionalNullableString,
   authorPosition:  optionalNullableString,
+  pdfUrl:          optionalNullableString,
+  pdfPublicId:     optionalNullableString,
+  pdfFileName:     optionalNullableString,
 });
 
 export const researchPaperUpdateSchema = researchPaperCreateSchema;

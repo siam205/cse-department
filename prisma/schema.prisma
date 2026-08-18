@@ -881,6 +881,14 @@ model ResearchPaper {
   area            String   @db.Text
   // External link to the publication (DOI, publisher page, etc.)
   link            String?  @db.Text
+  // Optional uploaded copy of the paper. When present the public title
+  // opens this instead of `link` — a hosted PDF is the more direct
+  // artifact. Same Cloudinary raw-upload trio as Syllabus /
+  // ProspectusEntry, served through /api/cloudinary/download so no
+  // time-limited signed URL is baked into the ISR-cached page.
+  pdfUrl          String?
+  pdfPublicId     String?
+  pdfFileName     String?
   // date — free-form string. Source data has inconsistent formats:
   // "14 August 2019", "January–February 2023", "2023", "" (empty).
   // No DateTime parse; publicationYear below is the optional

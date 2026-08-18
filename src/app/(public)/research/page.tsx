@@ -1,8 +1,8 @@
 import Link from 'next/link';
-import { Calendar, MapPin, Users, FileText, BookOpen, Award, BadgeCheck, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Calendar, MapPin, Users, FileText, BookOpen, Award, BadgeCheck, ChevronLeft, ChevronRight, FileDown } from 'lucide-react';
 import PageShell from '@/components/layout/PageShell';
 import Container from '@/components/ui/Container';
-import { getResearchPapers, getResearchPapersCount, getPageHero } from '@/lib/identity';
+import { getResearchPapers, getResearchPapersCount, getPageHero, researchPaperHref } from '@/lib/identity';
 
 const PAGE_SIZE = 20;
 
@@ -84,18 +84,27 @@ export default async function ResearchPage({
 
                 <div className="flex-1 min-w-0">
                   <h3 className="text-[15px] md:text-[16px] font-bold leading-snug text-primary mb-3">
-                    {paper.link ? (
-                      <a
-                        href={paper.link}
-                        target="_blank"
-                        rel="nofollow noopener noreferrer"
-                        className="hover:text-accent transition-colors"
-                      >
-                        {paper.title}
-                      </a>
-                    ) : (
-                      paper.title
-                    )}
+                    {(() => {
+                      const target = researchPaperHref(paper);
+                      if (!target) return paper.title;
+                      return (
+                        <a
+                          href={target.href}
+                          target="_blank"
+                          rel="nofollow noopener noreferrer"
+                          className="hover:text-accent transition-colors inline-flex items-start gap-1.5"
+                        >
+                          <span>{paper.title}</span>
+                          {target.isPdf && (
+                            <FileDown
+                              size={14}
+                              aria-label="PDF available"
+                              className="shrink-0 mt-1 text-accent"
+                            />
+                          )}
+                        </a>
+                      );
+                    })()}
                   </h3>
 
                   <div className="flex flex-wrap gap-x-5 gap-y-2 mb-3 text-[12.5px]">

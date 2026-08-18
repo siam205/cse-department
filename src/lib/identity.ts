@@ -398,6 +398,24 @@ export const getResearchPapers = cache(async (opts?: { skip?: number; take?: num
   });
 });
 
+// Public research listing renders the title as a link. An uploaded PDF
+// takes priority over the external link; the Cloudinary asset is served
+// through the download route so the signed URL is minted per request
+// rather than baked into the ISR-cached page.
+export function researchPaperHref(paper: {
+  pdfPublicId: string | null;
+  link: string | null;
+}): { href: string; isPdf: boolean } | null {
+  if (paper.pdfPublicId) {
+    return {
+      href: `/api/cloudinary/download?publicId=${encodeURIComponent(paper.pdfPublicId)}&format=pdf`,
+      isPdf: true,
+    };
+  }
+  if (paper.link) return { href: paper.link, isPdf: false };
+  return null;
+}
+
 export const getResearchPapersCount = cache(async () => {
   return prisma.researchPaper.count();
 });
